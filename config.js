@@ -3,7 +3,7 @@
    ========================================================= */
 window.CONFIG = {
   /* Supabase 프로젝트 > Project Settings > API 에서 복사해 붙여 넣기 */
-  SUPABASE_URL: "https://pbvxyzixuohpbefkjvcn.supabase.co/rest/v1/",
+    SUPABASE_URL: "https://pbvxyzixuohpbefkjvcn.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBidnh5eml4dW9ocGJlZmtqdmNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDc3MTUsImV4cCI6MjEwNzk4MzcxNX0.vrJqJobOYQgiJC68VkJ34nZMyILh_El62IydJ1geSjU",
 
   /* 팀 정보 (공개 정보만). 우체통 코드는 여기 넣지 마세요 (setup/supabase.sql 에만).
