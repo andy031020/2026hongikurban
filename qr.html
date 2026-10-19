@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>팀별 QR · 응원 우체통</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@700&family=Noto+Sans+KR:wght@400;600;700&display=swap">
+<style>
+  :root{--ink:#1b2246;--muted:#6d7290;--line:#d9dcea;--accent:#3b55ad}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--ink);background:#f2f3f8}
+  header{max-width:1100px;margin:0 auto;padding:32px 20px 8px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+  h1{font-family:"EB Garamond",serif;font-size:2rem;margin:0}
+  header p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+  button{font:inherit;border:0;border-radius:999px;padding:12px 22px;background:var(--accent);color:#fff;cursor:pointer}
+  .grid{max-width:1100px;margin:0 auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+  .card{background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;break-inside:avoid}
+  .card .qr{width:180px;height:180px}
+  .card .qr img,.card .qr canvas{width:100%!important;height:100%!important}
+  .card b{font-size:1.2rem}
+  .card .t{color:var(--muted);font-size:.9rem}
+  .grp{grid-column:1/-1;margin:16px 0 0;font-size:1.1rem;color:var(--accent)}
+  @media print{.grp{break-before:page}.grp:first-child{break-before:auto}}
+  .card .cta{font-weight:700;color:var(--accent)}
+  .card a{font-size:.75rem;color:var(--muted);word-break:break-all}
+  @media print{body{background:#fff}header button{display:none}.grid{gap:12px}.card{border:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Team QR Codes</h1><p>이 주소(<span id="origin"></span>) 기준으로 만들어집니다. 최종 도메인에서 열고 인쇄하세요.</p></div>
+  <button onclick="print()">인쇄하기</button>
+</header>
+<div class="grid" id="grid"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/config.js"></script>
+<script>
+  const origin = location.origin;
+  document.getElementById("origin").textContent = origin;
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const grid = document.getElementById("grid");
+  let lastGroup = null;
+  CONFIG.TEAMS.forEach(t => {
+    if (t.group && t.group !== lastGroup) {
+      lastGroup = t.group;
+      const h = document.createElement("h2"); h.className = "grp"; h.textContent = t.group; grid.appendChild(h);
+    }
+    const url = `${origin}/#team-${t.id}`;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `<div class="qr"></div><b>${esc(t.name)}</b>${t.title ? `<span class="t">${esc(t.title)}</span>` : ""}
+      <span class="cta">${t.guestbook ? "방명록 남기기" : "응원 메시지 보내기"}</span><a href="${url}">${esc(url)}</a>`;
+    grid.appendChild(card);
+    new QRCode(card.querySelector(".qr"), { text: url, width: 360, height: 360, colorDark: "#1b2246", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.M });
+  });
+</script>
+</body>
+</html>
