@@ -61,7 +61,7 @@ p{margin:0}
   .urban{font-size:min(30vw,31vh)}
   .hero-txt{margin-top:2.5vh}
   .title{font-size:min(5.2vw,5.4vh)}
-  .scene{background-size:max(100vw,180vh) 84vh}
+  .scene{background-size:max(100vw,162vh) 74vh}
   .sunglow{bottom:8%}
   .bubble{max-width:min(320px,24vw);font-size:clamp(.95rem,1.15vw,1.3rem);padding:14px 20px}
   .preview{display:none}
