@@ -38,31 +38,31 @@ p{margin:0}
   background:linear-gradient(180deg,#e9e9e9 0%,#efefef 38%,#efefef 62%,#ffffff 100%);
   display:flex;flex-direction:column;align-items:center;padding-top:clamp(20px,4vh,48px);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.urban{position:relative;z-index:1;font-family:var(--f-cond);font-weight:400;font-size:clamp(7rem,30vw,19rem);line-height:.86;letter-spacing:-.01em;color:#fff;margin:0;user-select:none;display:flex}
+.urban{position:relative;z-index:2;font-family:var(--f-cond);font-weight:400;font-size:clamp(7rem,30vw,19rem);line-height:.86;letter-spacing:-.01em;color:#fff;margin:0;user-select:none;display:flex}
 .urban span{display:inline-block}
 .hero-txt{position:relative;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;margin-top:clamp(20px,4vh,40px)}
 .title{font-family:var(--f-serif);font-weight:700;font-size:clamp(1.8rem,6vw,3rem);letter-spacing:-.01em;line-height:1;color:var(--ink);
   background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 42%,#e9a58a 48%,#7d93e0 53%,var(--ink) 60%,var(--ink) 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.glow{position:absolute;z-index:0;pointer-events:none;border-radius:50%;filter:blur(60px);opacity:.55}
+.glow{position:absolute;z-index:1;pointer-events:none;border-radius:50%;filter:blur(60px);opacity:.35}
 .glow.a{width:min(70vw,620px);aspect-ratio:1;max-width:100%;left:-10%;top:18%;background:radial-gradient(circle,#f6cdb8 0%,transparent 70%)}
 .glow.b{width:min(60vw,520px);aspect-ratio:1;max-width:100%;right:-12%;top:30%;background:radial-gradient(circle,#c9d2f2 0%,transparent 70%)}
 .title small{display:block;font-size:.4em;letter-spacing:.03em;margin-top:6px;font-weight:600}
-.city{position:relative;z-index:2;width:min(112vw,780px);margin-top:clamp(4px,1.5vh,16px);margin-bottom:clamp(8px,3vh,32px);pointer-events:none;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10.5%,#000 89.5%,transparent 100%),linear-gradient(180deg,transparent 0%,#000 11%);
-  -webkit-mask-composite:source-in;
-  mask-image:linear-gradient(90deg,transparent 0%,#000 10.5%,#000 89.5%,transparent 100%),linear-gradient(180deg,transparent 0%,#000 11%);
-  mask-composite:intersect}
-.city img{display:block;width:100%;height:auto;max-width:100%}
-.hills{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:1;pointer-events:none}
-.hills svg{width:100%;height:100%;display:block}
+.scene{position:absolute;inset:0;z-index:0;pointer-events:none;background:#e9e9eb url("/assets/scene.webp") no-repeat 50% 100%/auto 58%;transform-origin:50% 100%}
+.sunglow{position:absolute;z-index:1;left:50%;bottom:14%;width:min(120vw,1100px);aspect-ratio:2/1;max-width:none;transform:translateX(-50%);pointer-events:none;border-radius:50%;background:radial-gradient(ellipse at 50% 60%,rgba(248,196,172,.55),rgba(248,196,172,0) 65%);filter:blur(30px);mix-blend-mode:multiply;opacity:.35}
+.mist{position:absolute;z-index:3;left:0;bottom:-2%;width:200%;height:34%;pointer-events:none;
+  background-image:radial-gradient(ellipse 22% 38% at 20% 62%,rgba(255,255,255,.85),rgba(255,255,255,0) 70%),radial-gradient(ellipse 18% 30% at 68% 48%,rgba(255,255,255,.7),rgba(255,255,255,0) 70%),radial-gradient(ellipse 26% 28% at 92% 72%,rgba(244,226,236,.6),rgba(244,226,236,0) 70%);
+  background-size:50% 100%;filter:blur(8px)}
+.mist.m2{bottom:6%;height:26%;opacity:.6;transform:scaleX(-1)}
+.motes{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.mote{position:absolute;bottom:-10px;border-radius:50%;background:radial-gradient(circle,#fff 0%,rgba(255,255,255,.9) 35%,rgba(255,236,226,0) 70%);opacity:0}
 /* TV · landscape screens: fill exactly one screen, wider composition */
 @media (min-aspect-ratio:4/3) and (min-width:900px){
   .stage{height:calc(100svh - 49px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:560px;padding-top:3vh;justify-content:flex-start}
   .urban{font-size:min(30vw,31vh)}
   .hero-txt{margin-top:2.5vh}
   .title{font-size:min(5.2vw,5.4vh)}
-  .city{width:min(112vw,101vh);margin-top:auto;margin-bottom:0}
-  .city img{aspect-ratio:825/508;object-fit:fill}
+  .scene{background-size:max(100vw,180vh) 84vh}
+  .sunglow{bottom:8%}
   .bubble{max-width:min(320px,24vw);font-size:clamp(.95rem,1.15vw,1.3rem);padding:14px 20px}
   .preview{display:none}
 }
@@ -70,12 +70,22 @@ p{margin:0}
   .urban span{animation:letterUp 1s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 90ms)}
   .title{animation:titleIn 1.2s cubic-bezier(.2,.8,.2,1) .45s both}
   .title small{animation:fadeIn .9s ease .95s both}
-  .city img{animation:cityIn 1.4s cubic-bezier(.2,.8,.2,1) .2s both, drift 7s ease-in-out 1.6s infinite alternate}
+  .scene{animation:sceneIn 1.6s cubic-bezier(.2,.8,.2,1) both, kenburns 26s ease-in-out 1.6s infinite alternate}
+  .mist{animation:mistMove 70s linear infinite}
+  .mist.m2{animation:mistMove2 110s linear infinite}
+  .sunglow{animation:sunBreathe 9s ease-in-out infinite alternate}
+  .mote{animation:moteRise var(--d) linear var(--delay) infinite}
 }
 @keyframes letterUp{from{opacity:.001;transform:translateY(38%);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
 @keyframes titleIn{from{opacity:.001;letter-spacing:.18em;transform:translateY(10px)}to{opacity:1;letter-spacing:-.01em;transform:none}}
 @keyframes fadeIn{from{opacity:.001}to{opacity:1}}
 @keyframes cityIn{from{opacity:.001;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes sceneIn{from{opacity:.001;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.045)}}
+@keyframes mistMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes mistMove2{from{transform:scaleX(-1) translateX(0)}to{transform:scaleX(-1) translateX(-50%)}}
+@keyframes sunBreathe{from{opacity:.22;transform:translateX(-50%) scale(.96)}to{opacity:.5;transform:translateX(-50%) scale(1.04)}}
+@keyframes moteRise{0%{opacity:0;transform:translate(0,0)}15%{opacity:var(--o)}85%{opacity:var(--o)}100%{opacity:0;transform:translate(var(--x),calc(-1 * var(--rise)))}}
 @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 @media (prefers-reduced-motion:no-preference){
   .stage.pulse .urban span{animation:breathe 3.2s cubic-bezier(.45,0,.25,1) both;animation-delay:calc(var(--i) * 160ms)}

@@ -50,11 +50,13 @@
 
   function viewHome() {
     return `<section class="stage" id="stage">
+      <div class="scene" aria-hidden="true"></div>
       <div class="glow a" aria-hidden="true"></div><div class="glow b" aria-hidden="true"></div>
       <p class="urban" aria-hidden="true">${[..."URBAN"].map((c, i) => `<span style="--i:${i}">${c}</span>`).join("")}</p>
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
-      <div class="hills" aria-hidden="true">${HILLS}</div>
-      <div class="city" aria-hidden="true"><img src="/assets/city.webp" alt=""></div>
+      <div class="sunglow" aria-hidden="true"></div>
+      <div class="mist" aria-hidden="true"></div><div class="mist m2" aria-hidden="true"></div>
+      <div class="motes" id="motes" aria-hidden="true"></div>
       <div class="sky" id="sky"></div>
     </section>
     ${configured ? "" : `<div class="preview"><span>Supabase 연결 전 · config.js 를 채워 주세요</span></div>`}`;
@@ -214,7 +216,15 @@
     sky.className = "still";
     sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${esc(short(m.text))}</div>`).join("");
   }
+  function makeMotes() {
+    const m = $("#motes"); if (!m || reduced) return;
+    m.innerHTML = Array.from({ length: 22 }, () => {
+      const sz = (3 + Math.random() * 6).toFixed(1);
+      return `<span class="mote" style="left:${(Math.random() * 100).toFixed(1)}%;width:${sz}px;height:${sz}px;--d:${(14 + Math.random() * 16).toFixed(1)}s;--delay:${(-Math.random() * 25).toFixed(1)}s;--x:${(Math.random() * 80 - 40).toFixed(0)}px;--rise:${(50 + Math.random() * 40).toFixed(0)}vh;--o:${(.35 + Math.random() * .5).toFixed(2)}"></span>`;
+    }).join("");
+  }
   function startHome() {
+    makeMotes();
     state.floats = []; state.idx = 0;
     refreshFloats();
     state.poll = setInterval(refreshFloats, 15000);
