@@ -199,3 +199,4 @@ details.terms p{margin-top:8px;line-height:1.6}
 @keyframes twinkle{0%{opacity:0;transform:scale(.2) rotate(0)}45%{opacity:1;transform:scale(1) rotate(45deg)}100%{opacity:0;transform:scale(.2) rotate(90deg)}}
 .urban span{text-shadow:0 0 30px rgba(255,214,196,.9),0 0 80px rgba(201,210,242,.7)}
 .wrap{padding-top:calc(48px + 40px)}
+.bubble .who{font-weight:700;color:var(--accent);letter-spacing:.02em}

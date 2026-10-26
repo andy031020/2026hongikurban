@@ -30,7 +30,7 @@
   }
   const api = {
     send: (d) => rpc("send_letter", d),
-    floats: () => rpc("public_floats"),
+    floats: () => rpc("public_floats2"),
     check: (code) => rpc("check_reply", { p_code: code }),
     letters: (team, code) => rpc("team_letters", { p_team: team, p_code: code }),
     update: (team, code, id, patch) => rpc("team_update_letter", { p_team: team, p_code: code, p_id: id, p_reply: patch.reply ?? null, p_hidden: patch.hidden ?? null }),
@@ -191,7 +191,7 @@
     b.style.left = Math.max(8, Math.random() * (w - 260)) + "px";
     b.style.setProperty("--h", h + 200 + "px");
     b.style.setProperty("--dur", (13 + Math.random() * 7).toFixed(1) + "s");
-    b.innerHTML = `<span class="sway">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${esc(short(m.text))}</span>`;
+    b.innerHTML = `<span class="sway">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${m.who ? `<b class="who">${esc(m.who)}</b> : ` : ""}${esc(short(m.text))}</span>`;
     b.firstChild.style.animationDelay = (-Math.random() * 5).toFixed(1) + "s";
     b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
     sky.appendChild(b);
@@ -215,7 +215,7 @@
   function drawStill() {
     const sky = $("#sky"); if (!sky) return;
     sky.className = "still";
-    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${esc(short(m.text))}</div>`).join("");
+    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${m.who ? `<b class="who">${esc(m.who)}</b> : ` : ""}${esc(short(m.text))}</div>`).join("");
   }
   function makeMotes() {
     const m = $("#motes"); if (!m || reduced) return;
