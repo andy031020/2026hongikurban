@@ -72,7 +72,7 @@ p{margin:0}
 }
 @media (prefers-reduced-motion:no-preference){
   .urban span{animation:letterUp 1s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 90ms)}
-  .title{animation:titleIn 1.2s cubic-bezier(.2,.8,.2,1) .45s both}
+  .hero-txt{animation:titleIn 1.2s cubic-bezier(.2,.8,.2,1) .45s both}
   .title small{animation:fadeIn .9s ease .95s both}
   .scene{animation:sceneIn 1.6s cubic-bezier(.2,.8,.2,1) both, kenburns 26s ease-in-out 1.6s infinite alternate}
   .mist{animation:mistMove 70s linear infinite}
