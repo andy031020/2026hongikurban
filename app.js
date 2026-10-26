@@ -56,7 +56,6 @@
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
       <div class="sunglow" aria-hidden="true"></div>
       <div class="mist" aria-hidden="true"></div><div class="mist m2" aria-hidden="true"></div>
-      <div class="rays" aria-hidden="true"></div><div class="sheen" aria-hidden="true"></div>
       <div class="motes" id="motes" aria-hidden="true"></div>
       <div class="sparks" id="sparks" aria-hidden="true"></div>
       <div class="sky" id="sky"></div>

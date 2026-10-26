@@ -88,7 +88,6 @@ p{margin:0}
 @keyframes moteRise{0%{opacity:0;transform:translate(0,0)}15%{opacity:var(--o)}85%{opacity:var(--o)}100%{opacity:0;transform:translate(var(--x),calc(-1 * var(--rise)))}}
 @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-8px)}}
 @media (prefers-reduced-motion:no-preference){
-  .stage.pulse .urban span{animation:breathe 3.2s cubic-bezier(.45,0,.25,1) both;animation-delay:calc(var(--i) * 160ms)}
   .stage.pulse .title{animation:shine 2.2s ease-in-out .35s both}
   .glow.a{animation:float-a 20s ease-in-out infinite alternate}
   .glow.b{animation:float-b 20s ease-in-out infinite alternate}
@@ -184,23 +183,11 @@ details.terms p{margin-top:8px;line-height:1.6}
 
 /* ---- 화려한 효과 ---- */
 .title{filter:drop-shadow(0 0 10px rgba(255,255,255,.95)) drop-shadow(0 0 28px rgba(255,255,255,.7))}
-.rays{position:absolute;z-index:1;left:50%;top:62%;width:170vmax;aspect-ratio:1;max-width:none;transform:translate(-50%,-50%);pointer-events:none;
-  background:repeating-conic-gradient(from 0deg,rgba(255,255,255,0) 0deg 7deg,rgba(255,236,224,.55) 8deg 10deg,rgba(255,255,255,0) 11deg 18deg);
-  -webkit-mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.6) 18%,transparent 48%);mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.6) 18%,transparent 48%);
-  mix-blend-mode:soft-light;opacity:.7}
-.sheen{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:overlay;opacity:0;
-  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.0) 40%,rgba(255,255,255,.95) 50%,rgba(255,255,255,0) 60%,transparent 70%);background-size:300% 100%;background-position:120% 0}
 .sparks{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
 .spark{position:absolute;width:var(--s);height:var(--s);background:#fff;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
   filter:drop-shadow(0 0 6px rgba(255,214,196,.95)) drop-shadow(0 0 12px rgba(201,210,242,.8));opacity:0}
 @media (prefers-reduced-motion:no-preference){
-  .urban span{animation:letterUp 1s cubic-bezier(.2,.8,.2,1) both, urbanGlow 7s ease-in-out 1.2s infinite alternate;animation-delay:calc(var(--i) * 90ms),calc(1.2s + var(--i) * 300ms)}
-  .rays{animation:raySpin 140s linear infinite, rayFade 1.8s ease 1s both}
-  .stage.pulse .sheen{animation:sheenSweep 2.6s ease-in-out both}
   .spark{animation:twinkle var(--d) ease-in-out both}
 }
-@keyframes urbanGlow{from{text-shadow:0 0 0 rgba(255,214,196,0)}to{text-shadow:0 0 30px rgba(255,214,196,.95),0 0 80px rgba(201,210,242,.75)}}
-@keyframes raySpin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-@keyframes rayFade{from{opacity:0}to{opacity:.7}}
-@keyframes sheenSweep{0%{opacity:0;background-position:120% 0}15%{opacity:1}85%{opacity:1}100%{opacity:0;background-position:-20% 0}}
 @keyframes twinkle{0%{opacity:0;transform:scale(.2) rotate(0)}45%{opacity:1;transform:scale(1) rotate(45deg)}100%{opacity:0;transform:scale(.2) rotate(90deg)}}
+.urban span{text-shadow:0 0 30px rgba(255,214,196,.9),0 0 80px rgba(201,210,242,.7)}
