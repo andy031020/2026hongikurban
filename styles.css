@@ -60,7 +60,7 @@ p{margin:0}
 .mote{position:absolute;bottom:-10px;border-radius:50%;background:radial-gradient(circle,#fff 0%,rgba(255,255,255,.9) 35%,rgba(255,236,226,0) 70%);opacity:0}
 /* TV · landscape screens: fill exactly one screen, wider composition */
 @media (min-aspect-ratio:4/3) and (min-width:900px){
-  .stage{height:calc(100svh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:560px;padding-top:calc(44px + 1.5vh);justify-content:flex-start}
+  .stage{height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:560px;padding-top:calc(44px + 1.5vh);justify-content:flex-start}
   .urban{font-size:min(30vw,31vh)}
   .hero-txt{margin-top:2.5vh}
   .title{font-size:min(5.2vw,5.4vh)}
