@@ -183,22 +183,31 @@
   }
 
   /* ================= 떠다니는 메시지 ================= */
-  function spawn(m) {
-    const sky = $("#sky"), st = $("#stage"); if (!sky || !st) return;
-    if (sky.childElementCount >= Math.max(12, Math.round(st.clientWidth / 120))) return;
-    const b = document.createElement("div"); b.className = "bubble";
+  // 말풍선: 화면을 세로 줄(lane)로 나눠 겹치지 않게, 같은 메시지는 동시에 두 번 안 뜨게
+  function spawn(m, force) {
+    const sky = $("#sky"), st = $("#stage"); if (!sky || !st) return false;
     const w = st.clientWidth, h = st.clientHeight;
-    b.style.left = Math.max(8, Math.random() * (w - 260)) + "px";
-    b.style.setProperty("--h", h + 200 + "px");
-    b.style.setProperty("--dur", (13 + Math.random() * 7).toFixed(1) + "s");
-    b.innerHTML = `<span class="sway">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${m.who ? `<b class="who">${esc(m.who)}</b> : ` : ""}${esc(short(m.text))}</span>`;
+    const max = Math.min(9, Math.max(3, Math.round(w / 240)));
+    if (!force && sky.childElementCount >= max) return false;
+    if ([...sky.children].some((c) => c.dataset.id === String(m.id))) return false;
+    const lanes = Math.max(2, Math.floor((w - 32) / 300)), lw = (w - 32) / lanes;
+    let lane; do { lane = Math.floor(Math.random() * lanes); } while (lanes > 2 && (lane === state.lastLane || lane === state.prevLane));
+    state.prevLane = state.lastLane; state.lastLane = lane;
+    const b = document.createElement("div"); b.className = "bubble"; b.dataset.id = m.id;
+    b.style.left = (16 + lane * lw + Math.random() * Math.max(0, lw - 300) * 0.8) + "px";
+    b.style.maxWidth = Math.min(340, lw - 16) + "px";
+    b.style.setProperty("--h", h + 360 + "px");
+    b.style.setProperty("--dur", ((h + 360) / (52 + Math.random() * 14)).toFixed(1) + "s");
+    b.innerHTML = `<div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${esc(m.text)}</p></div>`;
     b.firstChild.style.animationDelay = (-Math.random() * 5).toFixed(1) + "s";
     b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
     sky.appendChild(b);
+    return true;
   }
   function tick() {
     if (!$("#sky")) return stopHome();
-    if (state.floats.length) spawn(state.floats[state.idx++ % state.floats.length]);
+    const n = state.floats.length; if (!n) return;
+    for (let k = 0; k < n; k++) { if (spawn(state.floats[state.idx++ % n])) return; }
   }
   async function refreshFloats() {
     if (!sb) return;
@@ -208,14 +217,14 @@
       const first = !state.floats.length;
       state.floats = list;
       if (reduced) return drawStill();
-      if (!first) fresh.slice(0, 3).forEach(spawn);
-      else for (let i = 0; i < Math.min(4, list.length); i++) setTimeout(tick, i * 700);
+      if (!first) fresh.slice(0, 3).forEach((m) => spawn(m, true));
+      else for (let i = 0; i < Math.min(4, list.length); i++) setTimeout(tick, i * 1600);
     } catch (_) { /* 다음 주기에 다시 시도 */ }
   }
   function drawStill() {
     const sky = $("#sky"); if (!sky) return;
     sky.className = "still";
-    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${m.who ? `<b class="who">${esc(m.who)}</b> : ` : ""}${esc(short(m.text))}</div>`).join("");
+    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble"><div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${m.sticker ? `<i>${esc(m.sticker)}</i>` : ""}${esc(m.text)}</p></div></div>`).join("");
   }
   function makeMotes() {
     const m = $("#motes"); if (!m || reduced) return;
@@ -244,7 +253,7 @@
     refreshFloats();
     state.poll = setInterval(refreshFloats, 15000);
     if (reduced) return;
-    state.timer = setInterval(tick, innerWidth >= 1400 ? 1300 : 2200);
+    state.timer = setInterval(tick, innerWidth >= 1400 ? 2600 : 3400);
     state.pulse = setInterval(() => {
       const st = $("#stage"); if (!st) return;
       st.classList.remove("pulse"); void st.offsetWidth; st.classList.add("pulse");
