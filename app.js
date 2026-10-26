@@ -56,7 +56,9 @@
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
       <div class="sunglow" aria-hidden="true"></div>
       <div class="mist" aria-hidden="true"></div><div class="mist m2" aria-hidden="true"></div>
+      <div class="rays" aria-hidden="true"></div><div class="sheen" aria-hidden="true"></div>
       <div class="motes" id="motes" aria-hidden="true"></div>
+      <div class="sparks" id="sparks" aria-hidden="true"></div>
       <div class="sky" id="sky"></div>
     </section>
     ${configured ? "" : `<div class="preview"><span>Supabase 연결 전 · config.js 를 채워 주세요</span></div>`}`;
@@ -223,8 +225,22 @@
       return `<span class="mote" style="left:${(Math.random() * 100).toFixed(1)}%;width:${sz}px;height:${sz}px;--d:${(14 + Math.random() * 16).toFixed(1)}s;--delay:${(-Math.random() * 25).toFixed(1)}s;--x:${(Math.random() * 80 - 40).toFixed(0)}px;--rise:${(50 + Math.random() * 40).toFixed(0)}vh;--o:${(.35 + Math.random() * .5).toFixed(2)}"></span>`;
     }).join("");
   }
+  function spark() {
+    const box = $("#sparks"), st = $("#stage"); if (!box || !st) return;
+    if (box.childElementCount > 14) return;
+    const s = document.createElement("span"); s.className = "spark";
+    const w = st.clientWidth, h = st.clientHeight, sz = 8 + Math.random() * 16;
+    // 건물이 있는 화면 가운데 아래쪽 주변에 반짝임
+    s.style.left = (w * (0.5 + (Math.random() - 0.5) * Math.min(0.75, 900 / w))) + "px";
+    s.style.top = (h * (0.45 + Math.random() * 0.42)) + "px";
+    s.style.setProperty("--s", sz.toFixed(0) + "px");
+    s.style.setProperty("--d", (1.4 + Math.random() * 1.4).toFixed(2) + "s");
+    s.addEventListener("animationend", () => s.remove());
+    box.appendChild(s);
+  }
   function startHome() {
     makeMotes();
+    if (!reduced) state.sparkT = setInterval(spark, 450);
     state.floats = []; state.idx = 0;
     refreshFloats();
     state.poll = setInterval(refreshFloats, 15000);
@@ -236,7 +252,7 @@
       setTimeout(() => st.classList.remove("pulse"), 3200);
     }, 10000);
   }
-  function stopHome() { clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
+  function stopHome() { clearInterval(state.sparkT); clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
 
   /* ================= 라우팅 ================= */
   function route() {
