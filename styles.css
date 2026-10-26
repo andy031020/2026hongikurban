@@ -197,5 +197,5 @@ details.terms p{margin-top:8px;line-height:1.6}
   .spark{animation:twinkle var(--d) ease-in-out both}
 }
 @keyframes twinkle{0%{opacity:0;transform:scale(.2) rotate(0)}45%{opacity:1;transform:scale(1) rotate(45deg)}100%{opacity:0;transform:scale(.2) rotate(90deg)}}
-.urban span{text-shadow:0 0 30px rgba(255,214,196,.9),0 0 80px rgba(201,210,242,.7)}
+.urban span{text-shadow:0.004em 0.004em 0 #eceef5,0.008em 0.008em 0 #e6e8f1,0.012em 0.012em 0 #e0e3ee,0.016em 0.016em 0 #dadeeb,0.020em 0.020em 0 #d4d8e8,0.024em 0.024em 0 #ced3e5,0.028em 0.028em 0 #c8cee2,0.032em 0.032em 0 #c2c9df,0.036em 0.036em 0 #bcc4dc,0.05em 0.07em 0.08em rgba(59,85,173,.22),0.02em 0.03em 0.02em rgba(27,34,70,.12)}
 .wrap{padding-top:calc(48px + 40px)}
