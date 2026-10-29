@@ -66,7 +66,11 @@
   // 판넬 제목이 있으면: 작은 글씨 팀명 + 큰 제목 / 없으면: 작은 글씨 분야 + 큰 팀명
   const teamHead = (t, sub = "") => {
     // QR 현판과 똑같이 팀원 이름으로 표시
-    if (t.members && t.members.length) return `<div class="head"><h2>${t.members.map((n, i, l) => `<span style="white-space:nowrap">${esc(n)}${i < l.length - 1 ? " ·" : ""}</span>`).join(" ")}</h2></div>`;
+    if (t.members && t.members.length) {
+      const s = t.members.join(" · ");
+      const em = [...s].reduce((w, c) => w + (/[가-힣]/.test(c) ? 1 : 0.32), 0) + 0.4; // 글자 폭(em) 어림
+      return `<div class="head"><h2 style="white-space:nowrap;font-size:min(2.1rem,calc((min(100vw,640px) - 44px) / ${em.toFixed(2)}))">${esc(s)}</h2></div>`;
+    }
     const tail = sub ? " · " + sub : "";
     return t.title
       ? `<div class="head"><p class="kicker">${esc(t.name)}${tail}</p><h2>${esc(t.title)}</h2></div>`
