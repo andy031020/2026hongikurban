@@ -65,6 +65,8 @@
 
   // 판넬 제목이 있으면: 작은 글씨 팀명 + 큰 제목 / 없으면: 작은 글씨 분야 + 큰 팀명
   const teamHead = (t, sub = "") => {
+    // QR 현판과 똑같이 팀원 이름으로 표시
+    if (t.members && t.members.length) return `<div class="head"><h2>${t.members.map((n, i, l) => `<span style="white-space:nowrap">${esc(n)}${i < l.length - 1 ? " ·" : ""}</span>`).join(" ")}</h2></div>`;
     const tail = sub ? " · " + sub : "";
     return t.title
       ? `<div class="head"><p class="kicker">${esc(t.name)}${tail}</p><h2>${esc(t.title)}</h2></div>`
@@ -104,10 +106,9 @@
       <div class="field"><label for="gname">이름<span class="req">*</span></label><input type="text" id="gname" maxlength="20" autocomplete="name"></div>
       <div class="field"><label for="gphone">전화번호<span class="req">*</span></label><input type="tel" id="gphone" maxlength="13" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678"></div>
       <div class="field"><label for="gtext">한 마디<span class="req">*</span></label><textarea id="gtext" maxlength="500"></textarea><p class="count"><span id="gcnt">0</span> / 500</p></div>
-      <div class="field"><span class="lab">사진 <span class="opt">선택 · 최대 3장</span></span><div class="photos" id="photos">${[0, 1, 2].map(photoSlot).join("")}</div></div>
       <div class="field">
         <label class="agree"><input type="checkbox" id="gagree"><span>개인정보 수집·이용에 동의합니다.<span class="req">*</span></span></label>
-        <details class="terms"><summary>자세히 보기</summary><p>수집 항목: 이름, 전화번호, 첨부 사진<br>이용 목적: 졸업전시 방명록 운영 및 감사 연락<br>보유 기간: 전시 종료 후 1개월 이내 파기<br>동의하지 않으실 수 있으나, 이 경우 방명록 작성이 어렵습니다.</p></details>
+        <details class="terms"><summary>자세히 보기</summary><p>수집 항목: 이름, 전화번호<br>이용 목적: 졸업전시 방명록 운영 및 감사 연락<br>보유 기간: 전시 종료 후 1개월 이내 파기<br>동의하지 않으실 수 있으나, 이 경우 방명록 작성이 어렵습니다.</p></details>
       </div>
       <p class="err" id="gerr" hidden></p>
       <label class="toggle" for="gpub">홈 화면에도 띄우기<input type="checkbox" class="switch" id="gpub" checked></label>
