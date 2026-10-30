@@ -320,3 +320,90 @@ details.terms p{margin-top:8px;line-height:1.6}
 .thero + .tsheetbg .tpage,.tsheetbg .tpage{margin-top:0;padding-top:20px!important}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
+
+/* ================= v4: 살아있는 도시 ================= */
+/* 창문 불빛 */
+.wins{position:absolute;inset:0;pointer-events:none;z-index:1}
+.win{position:absolute;border-radius:1px;background:#fff8e8;box-shadow:0 0 6px 2px rgba(255,226,186,.85);opacity:0}
+@media (prefers-reduced-motion:no-preference){.win{animation:winblink var(--d) ease-in-out var(--dl) infinite}}
+@keyframes winblink{0%,62%,100%{opacity:0}72%,88%{opacity:.85}}
+/* 구름 */
+.clouds{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.cl{position:absolute;display:block;width:42vw;max-width:520px;aspect-ratio:3.2/1;border-radius:50%;
+  background:radial-gradient(ellipse at 30% 60%,rgba(255,255,255,.85),rgba(255,255,255,0) 60%),radial-gradient(ellipse at 65% 45%,rgba(255,255,255,.8),rgba(255,255,255,0) 62%);filter:blur(6px);opacity:.75;left:-50vw}
+.cl.c1{top:12%}.cl.c2{top:24%;width:30vw;opacity:.55}.cl.c3{top:6%;width:24vw;opacity:.5}
+@media (prefers-reduced-motion:no-preference){
+  .cl.c1{animation:drift 120s linear -30s infinite}.cl.c2{animation:drift 160s linear -90s infinite}.cl.c3{animation:drift 200s linear -150s infinite}
+}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(160vw)}}
+/* 새 떼 */
+.flock{position:absolute;left:-140px;z-index:2;pointer-events:none;color:rgba(30,40,78,.45);width:120px;height:60px;animation:fly var(--fd) linear forwards}
+.flock.rtl{left:auto;right:-140px;animation-name:flyr}
+.flock.rtl .bird svg{transform:scaleX(-1)}
+.bird{position:absolute;display:block}
+.bird svg{display:block;width:100%;animation:flap var(--fl) ease-in-out infinite alternate;transform-origin:50% 70%}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.35)}}
+.flock.rtl .bird svg{animation-name:flapr}
+@keyframes flapr{from{transform:scale(-1,1)}to{transform:scale(-1,.35)}}
+@keyframes fly{0%{transform:translate(0,0)}50%{transform:translate(60vw,-18px)}100%{transform:translate(calc(100vw + 300px),6px)}}
+@keyframes flyr{0%{transform:translate(0,0)}50%{transform:translate(-60vw,-18px)}100%{transform:translate(calc(-100vw - 300px),6px)}}
+
+/* TV: 뒤쪽 작은 말풍선 (깊이감) */
+.sky.back{z-index:2}
+.bubble.back{font-size:.74em;filter:blur(1.4px)}
+.bubble.back .msg{opacity:.62;box-shadow:none!important}
+@media (min-aspect-ratio:4/3) and (min-width:900px){.bubble.back{font-size:.7em}}
+/* TV: 새 메시지 */
+.bubble.fresh .msg{box-shadow:0 0 0 3px rgba(255,255,255,.95),0 0 34px rgba(239,183,156,.85),var(--shadow)!important}
+.newtag{position:absolute;top:-12px;left:12px;z-index:3;padding:2px 9px;border-radius:999px;background:#fff;color:#c86f4b;font-size:.64em;font-weight:700;letter-spacing:.04em;box-shadow:0 2px 10px rgba(239,183,156,.6)}
+.nst{position:absolute;z-index:3;width:14px;height:14px;background:#fff;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 6px rgba(239,183,156,1))}
+.nst.s1{left:-10px;top:30%}.nst.s2{right:-12px;top:-14px;width:18px;height:18px}.nst.s3{right:18%;bottom:-12px;width:11px;height:11px}
+@media (prefers-reduced-motion:no-preference){.nst{animation:twinkle 1.6s ease-in-out infinite}.nst.s2{animation-delay:.5s}.nst.s3{animation-delay:1s}
+  .bubble.fresh .msg{animation:freshPulse 2s ease-in-out 3}}
+@keyframes freshPulse{50%{transform:scale(1.05)}}
+
+/* 팀 커버: 살아있는 하늘 */
+.thero .clouds{z-index:1}
+.thero-city{z-index:1}
+.thero .motes,.thero .sparks{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.tsky{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.bubble.tb{font-size:.78rem;bottom:-120px}
+.bubble.tb .msg{padding:9px 14px!important;opacity:.92}
+.bubble.tb .who{font-size:.62rem}
+.thero-txt{z-index:3}
+.thero::after{z-index:2}
+/* 시간대별 하늘 */
+.thero.tod-dusk{background:linear-gradient(180deg,#efd7cb 0%,#f5c9b5 48%,#f1e4ea 100%)}
+.thero.tod-dusk .thero-city{filter:saturate(1.2) sepia(.14) hue-rotate(-10deg)}
+.thero.tod-dusk .cl{opacity:.55;background:radial-gradient(ellipse at 30% 60%,rgba(255,226,214,.9),rgba(255,226,214,0) 60%),radial-gradient(ellipse at 65% 45%,rgba(255,236,226,.85),rgba(255,236,226,0) 62%)}
+.thero.tod-night{background:linear-gradient(180deg,#151b3c 0%,#28356a 52%,#55639a 100%)}
+.thero.tod-night .thero-city{filter:brightness(.6) saturate(.9) hue-rotate(8deg) contrast(1.05)}
+.thero.tod-night .cl{opacity:.16}
+.thero.tod-night .teye{color:#e9ecf8;opacity:.9}
+.thero.tod-night .win{animation-duration:calc(var(--d) * .6)}
+.thero.tod-night::after{background:linear-gradient(180deg,rgba(241,241,243,0),rgba(241,241,243,.92) 94%)}
+.thero.tod-night .flock{color:rgba(233,236,248,.5)}
+body.tnight .brand{color:#e9ecf8;text-shadow:none}
+.stars{position:absolute;inset:0;z-index:0;pointer-events:none}
+.stars i{position:absolute;display:block;aspect-ratio:1;border-radius:50%;background:#fff;opacity:.2}
+@media (prefers-reduced-motion:no-preference){.stars i{animation:starTw var(--d) ease-in-out var(--dl) infinite alternate}}
+@keyframes starTw{to{opacity:.95}}
+
+/* 꽃가루 */
+.cf{position:absolute;top:-24px;display:block;border-radius:2px;opacity:.95;animation:cfall var(--d) cubic-bezier(.25,.4,.5,1) both;box-shadow:0 0 0 .5px rgba(27,34,70,.06)}
+.cf.petal{border-radius:60% 0 60% 0}
+@keyframes cfall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--x),105vh) rotate(var(--r));opacity:.8}}
+
+/* 카드 템플릿 선택 */
+.tpl{display:inline-flex;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:999px;padding:4px;gap:2px;margin-top:6px}
+.tpl button{font:inherit;font-size:.85rem;border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:999px;cursor:pointer}
+.tpl button[aria-checked=true]{background:var(--ink);color:#fff;font-weight:600}
+
+.thero-wins{position:absolute;inset:auto 0 0 0;height:76%;z-index:1;pointer-events:none}
+.bubble.tb{bottom:24%}
+.thero.tod-dusk .thero-city{mix-blend-mode:multiply;filter:saturate(1.15)}
+.thero.tod-night{background:linear-gradient(180deg,#141a3a 0%,#25315f 45%,#6c79ad 82%,#9aa5cf 100%)}
+.thero.tod-night .thero-city{mix-blend-mode:multiply;filter:brightness(1.18) saturate(1.05)}
+.thero.tod-night .win{box-shadow:0 0 8px 3px rgba(255,220,170,.9)}
+.thero-city{-webkit-mask:linear-gradient(180deg,transparent 0,#000 14%);mask:linear-gradient(180deg,transparent 0,#000 14%)}
+.bubble.back .msg{opacity:.78}

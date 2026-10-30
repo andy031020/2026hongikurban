@@ -48,12 +48,41 @@
     },
   };
 
+  /* ================= 도시 연출 (창문 불빛 · 구름 · 새) ================= */
+  const WIN = [[0.5869,0.424],[0.5022,0.6332],[0.5662,0.3303],[0.4271,0.5933],[0.5141,0.5173],[0.4666,0.4471],[0.4693,0.55],[0.4683,0.5995],[0.4097,0.5317],[0.5662,0.2966],[0.5876,0.4024],[0.4114,0.5115],[0.5202,0.4822],[0.5817,0.3178],[0.5055,0.4764],[0.5159,0.6216],[0.5824,0.5486],[0.4672,0.4764],[0.5071,0.6519],[0.4267,0.6375],[0.4598,0.4317],[0.5836,0.3712],[0.4576,0.4529],[0.5814,0.5212],[0.5816,0.2861],[0.4459,0.462],[0.5917,0.5519],[0.4253,0.5216],[0.5055,0.6101],[0.5122,0.6014],[0.5897,0.5274],[0.4238,0.612],[0.5095,0.5654],[0.4726,0.5139],[0.5902,0.4856],[0.4507,0.4399],[0.5184,0.6433],[0.4666,0.4188],[0.5076,0.6952],[0.5155,0.5812],[0.4155,0.4904],[0.4241,0.5582],[0.591,0.4611],[0.5164,0.4538],[0.4666,0.5293],[0.5879,0.5062],[0.5721,0.3144],[0.584,0.3413],[0.4262,0.5005],[0.5812,0.4404],[0.4674,0.575],[0.5917,0.576],[0.4598,0.4091],[0.5626,0.35],[0.5614,0.3784],[0.5166,0.5596],[0.5198,0.5409],[0.5821,0.4692],[0.4683,0.4966],[0.5102,0.5413],[0.5729,0.2822],[0.506,0.5841],[0.5097,0.6322],[0.4722,0.4611]];
+  // 배경 그림(5800×2080)이 요소 안에서 실제로 그려진 상자
+  function sceneBox(el, mode) {
+    const w = el.clientWidth, h = el.clientHeight; let bw, bh;
+    if (mode === "tv") { bw = Math.max(innerWidth, innerHeight * 2.02); bh = bw * 2080 / 5800; }
+    else { bh = h * (mode === "mobile" ? 0.82 : 1); bw = bh * 5800 / 2080; }
+    return { x: (w - bw) / 2, y: h - bh, w: bw, h: bh };
+  }
+  const isTV = () => matchMedia("(min-aspect-ratio:4/3) and (min-width:900px)").matches;
+  function makeWindows(el, mode) {
+    if (!el || reduced) return;
+    let box = el.querySelector(":scope > .wins"); if (!box) { box = document.createElement("div"); box.className = "wins"; el.appendChild(box); }
+    const b = sceneBox(el, mode), s = Math.max(2, b.w / 5800 * 13);
+    box.innerHTML = WIN.map(([x, y]) => `<i class="win" style="left:${(b.x + x * b.w).toFixed(1)}px;top:${(b.y + y * b.h).toFixed(1)}px;width:${s.toFixed(1)}px;height:${(s * 1.5).toFixed(1)}px;--d:${(5 + Math.random() * 7).toFixed(1)}s;--dl:${(-Math.random() * 12).toFixed(1)}s"></i>`).join("");
+  }
+  const CLOUDS = `<div class="clouds" aria-hidden="true"><i class="cl c1"></i><i class="cl c2"></i><i class="cl c3"></i></div>`;
+  const BIRD = `<svg viewBox="0 0 24 10" aria-hidden="true"><path d="M1 7 Q6 1 12 7 Q18 1 23 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  function birds(host) {
+    if (!host || reduced) return;
+    const f = document.createElement("div"); f.className = "flock";
+    const n = 3 + Math.floor(Math.random() * 3), rtl = Math.random() < 0.5;
+    f.style.top = (10 + Math.random() * 22).toFixed(1) + "%"; f.style.setProperty("--fd", (16 + Math.random() * 8).toFixed(1) + "s");
+    if (rtl) f.classList.add("rtl");
+    f.innerHTML = Array.from({ length: n }, (_, i) => `<span class="bird" style="left:${i * 22 + Math.random() * 10}px;top:${Math.abs(i - n / 2) * 9 + Math.random() * 6}px;--fl:${(0.42 + Math.random() * 0.2).toFixed(2)}s;width:${16 + Math.random() * 8}px">${BIRD}</span>`).join("");
+    f.addEventListener("animationend", (e) => { if (e.target === f) f.remove(); });
+    host.appendChild(f);
+  }
+
   /* ================= 화면 ================= */
   const HILLS = `<svg viewBox="0 0 1600 400" preserveAspectRatio="none"><defs><linearGradient id="hf" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".6" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff"/></linearGradient></defs><path d="M0 120 C200 60 380 70 560 110 S900 150 1080 100 S1420 50 1600 80 V400 H0Z" fill="#dfe3f0" opacity=".75"/><path d="M0 230 C260 200 520 190 800 215 S1340 240 1600 205 V400 H0Z" fill="#e9eaf3"/><rect x="0" y="180" width="1600" height="220" fill="url(#hf)"/></svg>`;
 
   function viewHome() {
     return `<section class="stage" id="stage">
-      <div class="scene" aria-hidden="true"><div class="glint"></div></div>
+      <div class="scene" aria-hidden="true" id="scene"><div class="glint"></div></div>${CLOUDS}<div class="sky back" id="skyb" aria-hidden="true"></div>
       <div class="glow a" aria-hidden="true"></div><div class="glow b" aria-hidden="true"></div>
       <p class="urban" aria-hidden="true">${[..."URBAN"].map((c, i) => `<span style="--i:${i}">${c}</span>`).join("")}</p>
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
@@ -110,7 +139,7 @@
   const QUICK = ["졸업 축하해요 🎓", "전시 정말 멋졌어요 ✨", "그동안 고생 많았어요 👏", "앞날을 응원해요 💐"];
   const fitNames = (s) => { const em = [...s].reduce((w, c) => w + (/[가-힣]/.test(c) ? 1 : 0.32), 0) + 0.4; return `font-size:min(2.3rem,calc((min(100vw,560px) - 48px) / ${em.toFixed(2)}))`; };
   const TBG = `<div class="tbg" aria-hidden="true"><i class="tbg-sun"></i></div>`;
-  const HERO = `<section class="thero" aria-label="URBAN 2026 졸업전시"><div class="thero-city" aria-hidden="true"></div>
+  const HERO = `<section class="thero" aria-label="URBAN 2026 졸업전시"><div class="stars" aria-hidden="true"></div>${CLOUDS}<div class="thero-city" aria-hidden="true" id="tcity"></div><div class="thero-wins" aria-hidden="true" id="twins"></div><div class="motes" id="motes" aria-hidden="true"></div><div class="sparks" id="tsparks" aria-hidden="true"></div><div class="tsky" id="tsky" aria-hidden="true"></div>
     <div class="thero-txt"><p class="turban" aria-hidden="true">URBAN</p><p class="teye">DESIGN &amp; PLANNING <span>·</span> 2026 GRADUATE EXHIBITION</p></div>
     <a class="tscroll" href="#gf" id="tscroll"><span>응원 남기기</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a></section>`;
   function viewGuest(t) {
@@ -148,6 +177,7 @@
       ${CHECK}
       <h2>응원이 전달됐어요</h2>
       <p class="tlead">${g.pub ? "잠시 후 전시장 화면에 떠올라요." : "팀에게만 조용히 전달돼요."}<br>팀에게 큰 힘이 될 거예요.</p>
+      <div class="tpl" role="radiogroup" aria-label="카드 디자인">${[["poster", "포스터"], ["minimal", "미니멀"], ["polaroid", "폴라로이드"]].map(([k, v]) => `<button type="button" role="radio" data-tpl="${k}" aria-checked="${k === (state.cardTpl || "poster")}">${v}</button>`).join("")}</div>
       <figure class="tcard" id="tcard"><div class="tcard-ph">응원 카드 만드는 중…</div></figure>
       <button class="btn tbtn" id="cardsave" type="button" disabled>응원 카드 저장 · 공유</button>
       <a class="tlink" href="#team-${esc(t ? t.id : "")}" id="again">한 번 더 남기기</a>
@@ -155,8 +185,42 @@
   };
 
   /* ---- 커버 위로 시트가 올라오는 스크롤 연출 ---- */
+  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; const h = new Date().getHours(); return h < 6 || h >= 19 ? "night" : h >= 16 ? "dusk" : "day"; };
+  function initCover() {
+    const hero = $(".thero"); if (!hero) return;
+    const tod = todNow(); hero.classList.add("tod-" + tod); document.body.classList.toggle("tnight", tod === "night");
+    if (tod === "night") $(".stars").innerHTML = Array.from({ length: 40 }, () => `<i style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 45).toFixed(1)}%;--d:${(2 + Math.random() * 4).toFixed(1)}s;--dl:${(-Math.random() * 4).toFixed(1)}s;width:${(1 + Math.random() * 2).toFixed(1)}px"></i>`).join("");
+    const lay = () => makeWindows($("#twins"), "full"); lay(); state.onResize = lay; addEventListener("resize", lay);
+    if (reduced) return;
+    makeMotes();
+    state.sparkT = setInterval(() => {
+      const box = $("#tsparks"); if (!box || box.childElementCount > 6) return;
+      const s = document.createElement("span"), sz = 7 + Math.random() * 12; s.className = "spark";
+      s.style.left = (20 + Math.random() * 60) + "%"; s.style.top = (45 + Math.random() * 35) + "%";
+      s.style.setProperty("--s", sz.toFixed(0) + "px"); s.style.setProperty("--d", (1.4 + Math.random() * 1.4).toFixed(2) + "s");
+      s.addEventListener("animationend", () => s.remove()); box.appendChild(s);
+    }, 700);
+    state.tfloats = [];
+    const load = async () => { try { state.tfloats = sb ? ((await api.floats()) || []) : []; } catch (_) {} };
+    load(); state.poll = setInterval(load, 30000);
+    const fill = QUICK.map((q) => ({ text: q, who: "", sticker: "" }));
+    const up = () => {
+      const sky = $("#tsky"), h = $(".thero"); if (!sky || !h || sky.childElementCount >= 3) return;
+      const list = state.tfloats.length ? state.tfloats : fill, m = list[Math.floor(Math.random() * list.length)];
+      const b = document.createElement("div"); b.className = "bubble tb" + bcls(m);
+      const lane = (state.tLane = ((state.tLane || 0) + 1 + Math.floor(Math.random() * 2)) % 3);
+      b.style.left = (4 + lane * 31 + Math.random() * 4) + "%"; b.style.maxWidth = "62%";
+      b.style.setProperty("--h", h.clientHeight * 0.5 + "px"); b.style.setProperty("--dur", (10 + Math.random() * 4).toFixed(1) + "s");
+      b.innerHTML = `<div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${esc(short(m.text).slice(0, 34))}</p></div>`;
+      b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
+      sky.appendChild(b);
+    };
+    setTimeout(up, 600); state.tT = setInterval(up, 3600);
+    setTimeout(() => birds(hero), 4000);
+  }
   function initSheet() {
     const hero = $(".thero"); if (!hero) return;
+    initCover();
     const onScroll = () => {
       const h = $(".thero"); if (!h) { removeEventListener("scroll", onScroll); return; }
       const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.8)));
@@ -196,10 +260,17 @@
       document.fonts.load('400 220px "Anton"'), document.fonts.load('600 40px "EB Garamond"'),
       document.fonts.load('600 46px "Noto Serif KR"', names + "To."), document.fonts.load('500 40px "Noto Sans KR"', g.text + g.name + "From."),
     ]); } catch (_) {}
+    let img = null; try { img = await loadImg("/assets/scene-hd3.webp"); } catch (_) {}
+    const tpl = state.cardTpl || "poster";
+    if (tpl === "minimal") drawMinimal(ctx, W, H, g, names);
+    else if (tpl === "polaroid") drawPolaroid(ctx, W, H, g, names, img);
+    else drawPoster(ctx, W, H, g, names, img);
+    return new Promise((ok) => cv.toBlob(ok, "image/png"));
+  }
+  function drawPoster(ctx, W, H, g, names, img) {
     ctx.fillStyle = "#f1f1f3"; ctx.fillRect(0, 0, W, H);
     try {
-      const img = await loadImg("/assets/scene-hd3.webp");
-      const ih = 820, iw = img.width * ih / img.height;
+      if (!img) throw 0; const ih = 820, iw = img.width * ih / img.height;
       ctx.globalAlpha = 0.5; ctx.drawImage(img, (W - iw) / 2, H - ih - 40, iw, ih); ctx.globalAlpha = 1;
     } catch (_) {}
     let gr = ctx.createLinearGradient(0, 0, 0, H);
@@ -227,9 +298,48 @@
     ctx.font = '600 28px "Noto Sans KR", sans-serif'; const from = "From. " + g.name, fw = ctx.measureText(from).width + 40;
     rrect(ctx, bx + bw - fw - 30, by - 22, fw, 46, 23); ctx.fillStyle = tag; ctx.fill(); ctx.fillStyle = "#fff"; ctx.fillText(from, bx + bw - 30 - fw / 2, by + 11);
     ctx.fillStyle = NAVY; ctx.font = '500 24px "Noto Sans KR", sans-serif'; ctx.textAlign = "left"; spaced(ctx, "2026 홍익대학교 도시공학과 졸업전시회", W / 2, H - 70, 5);
-    return new Promise((ok) => cv.toBlob(ok, "image/png"));
+  }
+  function drawMinimal(ctx, W, H, g, names) {
+    const NAVY = "#1e284e", [bb, bt] = CARD_C[state.color] || CARD_C.peach;
+    ctx.fillStyle = "#fbfaf8"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = bb; ctx.globalAlpha = .55; ctx.fillRect(0, 0, W, 14); ctx.fillRect(0, H - 14, W, 14); ctx.globalAlpha = 1;
+    ctx.strokeStyle = NAVY; ctx.lineWidth = 2; ctx.strokeRect(56, 56, W - 112, H - 112); ctx.lineWidth = .8; ctx.strokeRect(70, 70, W - 140, H - 140);
+    ctx.textAlign = "left"; ctx.fillStyle = NAVY; ctx.font = '600 24px "EB Garamond", serif'; spaced(ctx, "URBAN · 2026 GRADUATE EXHIBITION", W / 2, 150, 8);
+    ctx.textAlign = "center"; ctx.font = '400 220px "EB Garamond", serif'; ctx.fillStyle = bt; ctx.fillText("\u201C", W / 2, 420);
+    ctx.fillStyle = NAVY; ctx.font = '600 50px "Noto Serif KR", serif';
+    const lines = wrapLines(ctx, g.text, 820, 6), lh = 80, top = 640 - (lines.length - 1) * lh / 2;
+    lines.forEach((l, i) => ctx.fillText(l, W / 2, top + i * lh));
+    const y2 = top + (lines.length - 1) * lh + 110;
+    ctx.strokeStyle = bt; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(W / 2 - 40, y2 - 40); ctx.lineTo(W / 2 + 40, y2 - 40); ctx.stroke();
+    ctx.font = '500 34px "Noto Sans KR", sans-serif'; ctx.fillStyle = "#6d7290"; ctx.fillText("From. " + g.name, W / 2, y2 + 10);
+    ctx.font = '600 34px "Noto Serif KR", serif'; ctx.fillStyle = NAVY; let ns = 34; while (ctx.measureText("To. " + names).width > 860 && ns > 24) { ns -= 2; ctx.font = `600 ${ns}px "Noto Serif KR", serif`; }
+    ctx.fillText("To. " + names, W / 2, H - 200);
+    ctx.textAlign = "left"; ctx.font = '500 22px "Noto Sans KR", sans-serif'; ctx.fillStyle = "#6d7290"; spaced(ctx, "2026 홍익대학교 도시공학과 졸업전시회", W / 2, H - 130, 5);
+  }
+  function drawPolaroid(ctx, W, H, g, names, img) {
+    const NAVY = "#1e284e", [bb, bt] = CARD_C[state.color] || CARD_C.peach;
+    const gr = ctx.createLinearGradient(0, 0, W, H); gr.addColorStop(0, bb); gr.addColorStop(1, "#f6f3f1"); ctx.fillStyle = gr; ctx.fillRect(0, 0, W, H);
+    ctx.save(); ctx.translate(W / 2, H / 2 - 10); ctx.rotate(-0.035);
+    const fw = 840, fh = 1080, fx = -fw / 2, fy = -fh / 2;
+    ctx.shadowColor = "rgba(27,34,70,.22)"; ctx.shadowBlur = 50; ctx.shadowOffsetY = 18; ctx.fillStyle = "#fff"; ctx.fillRect(fx, fy, fw, fh);
+    ctx.shadowColor = "transparent";
+    const px = fx + 44, py = fy + 44, pw = fw - 88, ph = 640;
+    ctx.save(); ctx.beginPath(); ctx.rect(px, py, pw, ph); ctx.clip();
+    const sky = ctx.createLinearGradient(0, py, 0, py + ph); sky.addColorStop(0, "#ececef"); sky.addColorStop(.6, "#f3e3da"); sky.addColorStop(1, "#f6f6f8"); ctx.fillStyle = sky; ctx.fillRect(px, py, pw, ph);
+    if (img) { const ih = ph * 1.25, iw = img.width * ih / img.height; ctx.drawImage(img, px + pw / 2 - iw * 0.507, py + ph - ih, iw, ih); }
+    ctx.font = '400 150px "Anton", Impact, sans-serif'; ctx.textAlign = "center"; ctx.shadowColor = "rgba(233,169,140,.95)"; ctx.shadowBlur = 40; ctx.fillStyle = "#fff";
+    ctx.fillText("URBAN", px + pw / 2, py + 170); ctx.fillText("URBAN", px + pw / 2, py + 170); ctx.shadowBlur = 0;
+    ctx.restore();
+    ctx.textAlign = "left"; ctx.fillStyle = NAVY; ctx.font = '500 40px "Noto Sans KR", sans-serif';
+    const lines = wrapLines(ctx, g.text, pw - 20, 3); lines.forEach((l, i) => ctx.fillText(l, px + 6, py + ph + 80 + i * 58));
+    ctx.font = '600 30px "Noto Sans KR", sans-serif'; ctx.fillStyle = bt; ctx.textAlign = "right"; ctx.fillText("From. " + g.name, px + pw - 4, fy + fh - 52);
+    ctx.textAlign = "left"; ctx.fillStyle = "#6d7290"; ctx.font = '600 26px "Noto Serif KR", serif'; ctx.fillText("To. " + names, px + 6, fy + fh - 52);
+    ctx.fillStyle = "rgba(255,255,255,.55)"; ctx.save(); ctx.translate(0, fy - 6); ctx.rotate(0.06); ctx.fillStyle = bb; ctx.globalAlpha = .85; ctx.fillRect(-90, -24, 180, 50); ctx.restore();
+    ctx.restore();
+    ctx.textAlign = "left"; ctx.fillStyle = NAVY; ctx.font = '600 22px "EB Garamond", serif'; spaced(ctx, "2026 GRADUATE EXHIBITION · HONGIK URBAN", W / 2, H - 46, 6);
   }
   async function prepCard(g) {
+    state.lastG = g;
     try {
       const blob = await makeCard(g); if (!blob || !$("#tcard")) return;
       state.card = new File([blob], "URBAN2026_응원카드.png", { type: "image/png" });
@@ -242,6 +352,22 @@
     const f = state.card; if (!f) return;
     if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: "URBAN 2026 졸업전시 응원 카드" }); return; } catch (x) { if (x && x.name === "AbortError") return; } }
     const a = document.createElement("a"); a.href = URL.createObjectURL(f); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  /* ---- 보내기 순간 꽃가루 ---- */
+  function confetti() {
+    if (reduced) return;
+    const [bb, bt] = CARD_C[state.color] || CARD_C.peach, cols = [bb, bt, "#ffffff", "#efb79c", "#c9d2f2"];
+    const fx = document.createElement("div"); fx.className = "fx"; document.body.appendChild(fx);
+    for (let i = 0; i < 48; i++) {
+      const c = document.createElement("i"); c.className = "cf" + (Math.random() < 0.5 ? " petal" : "");
+      c.style.left = Math.random() * 100 + "vw"; c.style.background = cols[i % cols.length];
+      c.style.setProperty("--d", (2.2 + Math.random() * 1.6).toFixed(2) + "s"); c.style.setProperty("--x", (Math.random() * 120 - 60).toFixed(0) + "px");
+      c.style.setProperty("--r", (Math.random() * 720 - 360).toFixed(0) + "deg"); c.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s";
+      const s = 7 + Math.random() * 7; c.style.width = s + "px"; c.style.height = s * (1.2 + Math.random() * 0.6) + "px";
+      fx.appendChild(c);
+    }
+    setTimeout(() => fx.remove(), 4600);
   }
 
   /* ---- 보내기 순간 반짝이 ---- */
@@ -326,7 +452,7 @@
 
   /* ================= 떠다니는 메시지 ================= */
   // 말풍선: 화면을 세로 줄(lane)로 나눠 겹치지 않게, 같은 메시지는 동시에 두 번 안 뜨게
-  function spawn(m, force) {
+  function spawn(m, force, isNew) {
     const sky = $("#sky"), st = $("#stage"); if (!sky || !st) return false;
     const w = st.clientWidth, h = st.clientHeight;
     const max = Math.min(9, Math.max(3, Math.round(w / 240)));
@@ -335,16 +461,28 @@
     const lanes = Math.max(2, Math.floor((w - 32) / 300)), lw = (w - 32) / lanes;
     let lane; do { lane = Math.floor(Math.random() * lanes); } while (lanes > 2 && (lane === state.lastLane || lane === state.prevLane));
     state.prevLane = state.lastLane; state.lastLane = lane;
-    const b = document.createElement("div"); b.className = "bubble" + bcls(m); b.dataset.id = m.id;
+    const b = document.createElement("div"); b.className = "bubble" + bcls(m) + (isNew ? " fresh" : ""); b.dataset.id = m.id;
+    b.style.fontSize = isNew ? "1.14em" : (0.92 + Math.random() * 0.16).toFixed(2) + "em";
     b.style.left = (16 + lane * lw + Math.random() * Math.max(0, lw - 300) * 0.8) + "px";
     b.style.maxWidth = Math.min(340, lw - 16) + "px";
     b.style.setProperty("--h", h + 360 + "px");
     b.style.setProperty("--dur", ((h + 360) / (52 + Math.random() * 14)).toFixed(1) + "s");
-    b.innerHTML = `<div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${stk(m)}${esc(m.text)}</p></div>`;
+    b.innerHTML = `<div class="sway">${isNew ? `<span class="newtag">방금 도착</span><i class="nst s1"></i><i class="nst s2"></i><i class="nst s3"></i>` : ""}${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${stk(m)}${esc(m.text)}</p></div>`;
     b.firstChild.style.animationDelay = (-Math.random() * 5).toFixed(1) + "s";
     b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
     sky.appendChild(b);
     return true;
+  }
+  function spawnBack() {
+    const sky = $("#skyb"), st = $("#stage"), n = state.floats.length; if (!sky || !st || !n) return;
+    if (sky.childElementCount >= (isTV() ? 7 : 3)) return;
+    const m = state.floats[Math.floor(Math.random() * n)], w = st.clientWidth, h = st.clientHeight;
+    const b = document.createElement("div"); b.className = "bubble back" + bcls(m);
+    b.style.left = (8 + Math.random() * (w - 200)) + "px"; b.style.maxWidth = "220px";
+    b.style.setProperty("--h", h + 300 + "px"); b.style.setProperty("--dur", ((h + 300) / (24 + Math.random() * 10)).toFixed(1) + "s");
+    b.innerHTML = `<div class="sway"><p class="msg">${esc(short(m.text).slice(0, 40))}</p></div>`;
+    b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
+    sky.appendChild(b);
   }
   function tick() {
     if (!$("#sky")) return stopHome();
@@ -359,7 +497,7 @@
       const first = !state.floats.length;
       state.floats = list;
       if (reduced) return drawStill();
-      if (!first) fresh.slice(0, 3).forEach((m) => spawn(m, true));
+      if (!first) fresh.slice(0, 3).forEach((m, i) => setTimeout(() => spawn(m, true, true), i * 1800));
       else for (let i = 0; i < Math.min(4, list.length); i++) setTimeout(tick, i * 1600);
     } catch (_) { /* 다음 주기에 다시 시도 */ }
   }
@@ -396,18 +534,21 @@
     state.poll = setInterval(refreshFloats, 15000);
     if (reduced) return;
     state.timer = setInterval(tick, innerWidth >= 1400 ? 2600 : 3400);
+    state.backT = setInterval(spawnBack, 4200);
+    const lay = () => makeWindows($("#scene"), isTV() ? "tv" : "mobile"); lay(); state.onResize = lay; addEventListener("resize", lay);
+    setTimeout(() => birds($("#stage")), 9000); state.birdT = setInterval(() => birds($("#stage")), 42000);
     state.pulse = setInterval(() => {
       const st = $("#stage"); if (!st) return;
       st.classList.remove("pulse"); void st.offsetWidth; st.classList.add("pulse");
       setTimeout(() => st.classList.remove("pulse"), 3200);
     }, 10000);
   }
-  function stopHome() { clearInterval(state.sparkT); clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
+  function stopHome() { clearInterval(state.backT); clearInterval(state.birdT); clearInterval(state.tT); if (state.onResize) removeEventListener("resize", state.onResize); clearInterval(state.sparkT); clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
 
   /* ================= 라우팅 ================= */
   function route() {
     const h = (location.hash || "#home").slice(1);
-    stopHome();
+    stopHome(); document.body.classList.remove("tnight");
     const app = $("#app");
     state.box = null;
     const bx = h.match(/^box-([a-z0-9]+)-(.+)$/);
@@ -488,6 +629,8 @@
     const c = e.target.closest("[data-color]");
     if (c) { state.color = c.dataset.color; document.querySelectorAll("[data-color]").forEach((b) => b.setAttribute("aria-checked", String(b === c))); const p = $("#pvb"); if (p) p.className = "pv-b c-" + state.color; return; }
     if (e.target.id === "cardsave") saveCard();
+    const tp = e.target.closest("[data-tpl]");
+    if (tp && state.lastG) { state.cardTpl = tp.dataset.tpl; document.querySelectorAll("[data-tpl]").forEach((b) => b.setAttribute("aria-checked", String(b === tp))); $("#cardsave").disabled = true; prepCard(state.lastG); }
   });
   document.addEventListener("click", (e) => { if (e.target.id === "again" && location.hash === e.target.getAttribute("href")) { e.preventDefault(); route(); } });
   const drawPhotos = () => { const b = $("#photos"); if (b) b.innerHTML = [0, 1, 2].map(photoSlot).join(""); };
@@ -529,7 +672,7 @@
       try {
         await api.addGuest({ p_team: t.id, p_name: name, p_phone: phone, p_text: text, p_color: state.color || "", p_pub: $("#gpub").checked });
         const g = { name, text, pub: $("#gpub").checked }, pvb = $("#pvb");
-        if (!reduced && pvb) { btn.textContent = "전달 완료!"; burst(pvb); pvb.classList.add("launch"); await new Promise((r) => setTimeout(r, 950)); }
+        if (!reduced && pvb) { btn.textContent = "전달 완료!"; burst(pvb); confetti(); pvb.classList.add("launch"); await new Promise((r) => setTimeout(r, 950)); }
         $("#app").innerHTML = viewGuestDone(g); window.scrollTo(0, 0); prepCard(g);
       } catch (x) { fail(err, "저장하지 못했어요. 연결을 확인하고 다시 눌러 주세요."); btn.disabled = false; btn.textContent = "다시 남기기"; }
     }
