@@ -407,3 +407,13 @@ body.tnight .brand{color:#e9ecf8;text-shadow:none}
 .thero.tod-night .win{box-shadow:0 0 8px 3px rgba(255,220,170,.9)}
 .thero-city{-webkit-mask:linear-gradient(180deg,transparent 0,#000 14%);mask:linear-gradient(180deg,transparent 0,#000 14%)}
 .bubble.back .msg{opacity:.78}
+
+/* TV 홈: 16시 이후 노을 */
+.stage{transition:background 3s ease}
+.stage.tod-dusk{background:linear-gradient(180deg,#efd7cb 0%,#f5c9b5 46%,#f3dfe2 72%,#ffffff 100%)}
+.stage.tod-dusk .scene{background-color:transparent;mix-blend-mode:multiply}
+.stage.tod-dusk .stage .scene{filter:saturate(1.15)}
+.stage.tod-dusk .cl{opacity:.55;background:radial-gradient(ellipse at 30% 60%,rgba(255,226,214,.9),rgba(255,226,214,0) 60%),radial-gradient(ellipse at 65% 45%,rgba(255,236,226,.85),rgba(255,236,226,0) 62%)}
+.stage.tod-dusk .sunglow{opacity:.55}
+.stage.tod-dusk .scene{-webkit-mask:linear-gradient(180deg,transparent 14%,#000 30%);mask:linear-gradient(180deg,transparent 14%,#000 30%)}
+@media (min-aspect-ratio:4/3) and (min-width:900px){.stage.tod-dusk .scene{-webkit-mask:linear-gradient(180deg,transparent 32%,#000 50%);mask:linear-gradient(180deg,transparent 32%,#000 50%)}}

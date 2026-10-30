@@ -185,7 +185,7 @@
   };
 
   /* ---- 커버 위로 시트가 올라오는 스크롤 연출 ---- */
-  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; return new Date().getHours() >= 17 ? "dusk" : "day"; };
+  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; return new Date().getHours() >= 16 ? "dusk" : "day"; };
   function initCover() {
     const hero = $(".thero"); if (!hero) return;
     const tod = todNow(); hero.classList.add("tod-" + tod); document.body.classList.toggle("tnight", tod === "night");
@@ -526,6 +526,8 @@
     box.appendChild(s);
   }
   function startHome() {
+    const tod = () => { const st = $("#stage"); if (st) st.classList.toggle("tod-dusk", todNow() === "dusk"); };
+    tod(); state.todT = setInterval(tod, 60000);
     makeMotes();
     if (!reduced) state.sparkT = setInterval(spark, 450);
     state.floats = []; state.idx = 0;
@@ -541,7 +543,7 @@
       setTimeout(() => st.classList.remove("pulse"), 3200);
     }, 10000);
   }
-  function stopHome() { clearInterval(state.backT); clearInterval(state.birdT); clearInterval(state.tT); if (state.onResize) removeEventListener("resize", state.onResize); clearInterval(state.sparkT); clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
+  function stopHome() { clearInterval(state.todT); clearInterval(state.backT); clearInterval(state.birdT); clearInterval(state.tT); if (state.onResize) removeEventListener("resize", state.onResize); clearInterval(state.sparkT); clearInterval(state.timer); clearInterval(state.pulse); clearInterval(state.poll); state.timer = state.pulse = state.poll = null; }
 
   /* ================= 라우팅 ================= */
   function route() {
