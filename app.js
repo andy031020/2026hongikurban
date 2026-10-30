@@ -185,7 +185,7 @@
   };
 
   /* ---- 커버 위로 시트가 올라오는 스크롤 연출 ---- */
-  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; const h = new Date().getHours(); return h < 6 || h >= 19 ? "night" : h >= 16 ? "dusk" : "day"; };
+  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; return new Date().getHours() >= 17 ? "dusk" : "day"; };
   function initCover() {
     const hero = $(".thero"); if (!hero) return;
     const tod = todNow(); hero.classList.add("tod-" + tod); document.body.classList.toggle("tnight", tod === "night");
@@ -216,7 +216,6 @@
       sky.appendChild(b);
     };
     setTimeout(up, 600); state.tT = setInterval(up, 3600);
-    setTimeout(() => birds(hero), 4000);
   }
   function initSheet() {
     const hero = $(".thero"); if (!hero) return;
@@ -536,7 +535,6 @@
     state.timer = setInterval(tick, innerWidth >= 1400 ? 2600 : 3400);
     state.backT = setInterval(spawnBack, 4200);
     const lay = () => makeWindows($("#scene"), isTV() ? "tv" : "mobile"); lay(); state.onResize = lay; addEventListener("resize", lay);
-    setTimeout(() => birds($("#stage")), 9000); state.birdT = setInterval(() => birds($("#stage")), 42000);
     state.pulse = setInterval(() => {
       const st = $("#stage"); if (!st) return;
       st.classList.remove("pulse"); void st.offsetWidth; st.classList.add("pulse");
