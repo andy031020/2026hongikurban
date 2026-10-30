@@ -19,7 +19,7 @@
   const teamOf = (id) => TEAMS.find((t) => t.id === id);
   const fmt = (t) => { const d = new Date(t); return `${d.getMonth() + 1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
   const short = (s) => (s.length > 60 ? s.slice(0, 58) + "…" : s);
-  const COLORS = { peach: "살구", sky: "하늘", lav: "라벤더" };
+  const COLORS = { peach: "살구", rose: "로즈", butter: "버터", mint: "민트", sky: "하늘", lav: "라벤더" };
   const bcls = (m) => (COLORS[m.sticker] ? " c-" + m.sticker : "");
   const stk = (m) => (m.sticker && !COLORS[m.sticker] ? `<i>${esc(m.sticker)}</i>` : "");
   const CHECK = `<div class="check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>`;
@@ -111,11 +111,12 @@
   const fitNames = (s) => { const em = [...s].reduce((w, c) => w + (/[가-힣]/.test(c) ? 1 : 0.32), 0) + 0.4; return `font-size:min(2.3rem,calc((min(100vw,560px) - 48px) / ${em.toFixed(2)}))`; };
   const TBG = `<div class="tbg" aria-hidden="true"><i class="tbg-sun"></i></div>`;
   const HERO = `<section class="thero" aria-label="URBAN 2026 졸업전시"><div class="thero-city" aria-hidden="true"></div>
-    <div class="thero-txt"><p class="turban" aria-hidden="true">URBAN</p><p class="teye">DESIGN &amp; PLANNING <span>·</span> 2026 GRADUATE EXHIBITION</p></div></section>`;
+    <div class="thero-txt"><p class="turban" aria-hidden="true">URBAN</p><p class="teye">DESIGN &amp; PLANNING <span>·</span> 2026 GRADUATE EXHIBITION</p></div>
+    <a class="tscroll" href="#gf" id="tscroll"><span>응원 남기기</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a></section>`;
   function viewGuest(t) {
     state.photos = [null, null, null]; state.guestTeam = t; state.color = "peach";
     const names = (t.members && t.members.length) ? t.members.join(" · ") : t.name;
-    return `${TBG}${HERO}<main class="wrap tpage">
+    return `${TBG}${HERO}<div class="tsheetbg"><i class="tgrab" aria-hidden="true"></i><main class="wrap tpage">
     <form class="panel glass tsheet" id="gf" novalidate>
       <div class="tto"><span class="tto-l">To.</span><h2 class="tnames" style="${fitNames(names)}">${esc(names)}</h2><p class="tlead">졸업을 축하하는 한 마디를 남겨 주세요</p></div>
       <div class="field"><label for="gtext">한 마디<span class="req">*</span></label>
@@ -139,7 +140,7 @@
       <p class="err" id="gerr" hidden></p>
       <button class="btn block tbtn" id="gsend" type="submit">응원 보내기</button>
     </form>
-    <p class="tfoot">2026 홍익대학교 도시공학과 졸업전시회</p></main>`;
+    <p class="tfoot">2026 홍익대학교 도시공학과 졸업전시회</p></main></div>`;
   }
   const viewGuestDone = (g) => {
     const t = state.guestTeam;
@@ -152,6 +153,25 @@
       <a class="tlink" href="#team-${esc(t ? t.id : "")}" id="again">한 번 더 남기기</a>
     </section></main>`;
   };
+
+  /* ---- 커버 위로 시트가 올라오는 스크롤 연출 ---- */
+  function initSheet() {
+    const hero = $(".thero"); if (!hero) return;
+    const onScroll = () => {
+      const h = $(".thero"); if (!h) { removeEventListener("scroll", onScroll); return; }
+      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.8)));
+      h.style.setProperty("--p", p.toFixed(3));
+    };
+    addEventListener("scroll", onScroll, { passive: true }); onScroll();
+    if (!reduced && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+      document.querySelectorAll(".tsheet > *").forEach((el) => { el.classList.add("rv"); io.observe(el); });
+    }
+  }
+  document.addEventListener("click", (e) => {
+    const s = e.target.closest("#tscroll"); if (!s) return;
+    e.preventDefault(); const f = $(".tsheetbg"); if (f) scrollTo({ top: f.offsetTop - 8, behavior: reduced ? "auto" : "smooth" });
+  });
 
   /* ---- 응원 카드 (인스타 4:5 이미지) ---- */
   const loadImg = (src) => new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = src; });
@@ -167,7 +187,7 @@
   }
   function rrect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
   function spaced(ctx, s, x, y, sp) { const w = [...s].reduce((a, c) => a + ctx.measureText(c).width, 0) + sp * ([...s].length - 1); let cx = x - w / 2; for (const c of s) { ctx.fillText(c, cx, y); cx += ctx.measureText(c).width + sp; } }
-  const CARD_C = { peach: ["#fbe3d8", "#e9a98c"], sky: ["#e1e9fb", "#7f9fd6"], lav: ["#ebe5f8", "#a493d6"] };
+  const CARD_C = { peach: ["#fbe3d8", "#e39b7b"], rose: ["#f8e1e7", "#d88ea2"], butter: ["#f8efd4", "#cfa94e"], mint: ["#dcf1e8", "#6fae96"], sky: ["#e1e9fb", "#6f90cf"], lav: ["#ebe5f8", "#9784cf"] };
   async function makeCard(g) {
     const t = state.guestTeam, names = t.members ? t.members.join(" · ") : t.name;
     const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
@@ -391,7 +411,7 @@
     const app = $("#app");
     state.box = null;
     const bx = h.match(/^box-([a-z0-9]+)-(.+)$/);
-    if (h.startsWith("team-") && teamOf(h.slice(5))) app.innerHTML = viewTeam(teamOf(h.slice(5)));
+    if (h.startsWith("team-") && teamOf(h.slice(5))) { app.innerHTML = viewTeam(teamOf(h.slice(5))); requestAnimationFrame(initSheet); }
     else if (bx && teamOf(bx[1])) {
       // 팀 전용 우체통 링크: #box-<팀id>-<코드> (코드는 서버가 확인)
       state.box = { team: teamOf(bx[1]), code: decodeURIComponent(bx[2]) };
