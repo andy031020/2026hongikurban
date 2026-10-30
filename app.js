@@ -82,7 +82,7 @@
 
   function viewHome() {
     return `<section class="stage" id="stage">
-      <div class="scene" aria-hidden="true" id="scene"><div class="glint"></div></div>${CLOUDS}<div class="sky back" id="skyb" aria-hidden="true"></div>
+      <div class="scene" aria-hidden="true" id="scene"><div class="glint"></div></div><div class="duskfx" aria-hidden="true"></div>${CLOUDS}<div class="sky back" id="skyb" aria-hidden="true"></div>
       <div class="glow a" aria-hidden="true"></div><div class="glow b" aria-hidden="true"></div>
       <p class="urban" aria-hidden="true">${[..."URBAN"].map((c, i) => `<span style="--i:${i}">${c}</span>`).join("")}</p>
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
