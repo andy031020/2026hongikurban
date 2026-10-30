@@ -82,7 +82,7 @@
 
   function viewHome() {
     return `<section class="stage" id="stage">
-      <div class="scene" aria-hidden="true" id="scene"><div class="glint"></div></div><div class="duskfx" aria-hidden="true"></div>${CLOUDS}<div class="sky back" id="skyb" aria-hidden="true"></div>
+      <div class="scene" aria-hidden="true" id="scene"><div class="glint"></div></div><div class="duskfx" aria-hidden="true"></div><div class="nightfx" aria-hidden="true"></div><div class="hstars" id="hstars" aria-hidden="true"></div><div class="scenew" id="scenew" aria-hidden="true"></div>${CLOUDS}<div class="sky back" id="skyb" aria-hidden="true"></div>
       <div class="glow a" aria-hidden="true"></div><div class="glow b" aria-hidden="true"></div>
       <p class="urban" aria-hidden="true">${[..."URBAN"].map((c, i) => `<span style="--i:${i}">${c}</span>`).join("")}</p>
       <div class="hero-txt"><h1 class="title">DESIGN &amp; PLANNING<small>2026 GRADUATE EXHIBITION</small></h1></div>
@@ -185,7 +185,7 @@
   };
 
   /* ---- 커버 위로 시트가 올라오는 스크롤 연출 ---- */
-  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; return new Date().getHours() >= 16 ? "dusk" : "day"; };
+  const todNow = () => { const q = new URLSearchParams(location.search).get("tod"); if (q) return q; const h = new Date().getHours(); return h >= 18 || h < 5 ? "night" : h >= 16 ? "dusk" : "day"; };
   function initCover() {
     const hero = $(".thero"); if (!hero) return;
     const tod = todNow(); hero.classList.add("tod-" + tod); document.body.classList.toggle("tnight", tod === "night");
@@ -526,7 +526,11 @@
     box.appendChild(s);
   }
   function startHome() {
-    const tod = () => { const st = $("#stage"); if (st) st.classList.toggle("tod-dusk", todNow() === "dusk"); };
+    const tod = () => {
+      const st = $("#stage"); if (!st) return; const t = todNow(), night = t === "night";
+      st.classList.toggle("tod-dusk", t !== "day"); st.classList.toggle("tod-night", night); document.body.classList.toggle("tnight", night);
+      const hs = $("#hstars"); if (night && hs && !hs.childElementCount) hs.innerHTML = Array.from({ length: 70 }, () => `<i style="left:${(Math.random() * 100).toFixed(1)}%;top:${(Math.random() * 50).toFixed(1)}%;--d:${(2 + Math.random() * 4).toFixed(1)}s;--dl:${(-Math.random() * 4).toFixed(1)}s;width:${(1 + Math.random() * 2.2).toFixed(1)}px"></i>`).join("");
+    };
     tod(); state.todT = setInterval(tod, 60000);
     makeMotes();
     if (!reduced) state.sparkT = setInterval(spark, 450);
@@ -536,7 +540,7 @@
     if (reduced) return;
     state.timer = setInterval(tick, innerWidth >= 1400 ? 2600 : 3400);
     state.backT = setInterval(spawnBack, 4200);
-    const lay = () => makeWindows($("#scene"), isTV() ? "tv" : "mobile"); lay(); state.onResize = lay; addEventListener("resize", lay);
+    const lay = () => makeWindows($("#scenew"), isTV() ? "tv" : "mobile"); lay(); state.onResize = lay; addEventListener("resize", lay);
     state.pulse = setInterval(() => {
       const st = $("#stage"); if (!st) return;
       st.classList.remove("pulse"); void st.offsetWidth; st.classList.add("pulse");

@@ -42,7 +42,7 @@ p{margin:0}
 .urban span{display:inline-block}
 .hero-txt{position:relative;z-index:3;text-align:center;display:flex;flex-direction:column;align-items:center;margin-top:clamp(20px,4vh,40px)}
 .title{font-family:var(--f-serif);font-weight:700;font-size:clamp(1.8rem,6vw,3rem);letter-spacing:-.01em;line-height:1;color:var(--ink);
-  background:linear-gradient(100deg,var(--ink) 0%,var(--ink) 42%,#e9a58a 48%,#7d93e0 53%,var(--ink) 60%,var(--ink) 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  background:linear-gradient(100deg,var(--tink) 0%,var(--tink) 42%,#e9a58a 48%,#7d93e0 53%,var(--tink) 60%,var(--tink) 100%);background-size:300% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .glow{position:absolute;z-index:1;pointer-events:none;border-radius:50%;filter:blur(60px);opacity:.35}
 .glow.a{width:min(70vw,620px);aspect-ratio:1;max-width:100%;left:-10%;top:18%;background:radial-gradient(circle,#f6cdb8 0%,transparent 70%)}
 .glow.b{width:min(60vw,520px);aspect-ratio:1;max-width:100%;right:-12%;top:30%;background:radial-gradient(circle,#c9d2f2 0%,transparent 70%)}
@@ -413,3 +413,25 @@ body.tnight .brand{color:#e9ecf8;text-shadow:none}
   background:linear-gradient(180deg,#f2cdbb 0%,#f4c0a8 42%,#f3d3d4 68%,#fbeeee 84%,#fff 94%)}
 .stage.tod-dusk .duskfx{opacity:1}
 .stage.tod-dusk .sunglow{opacity:.55}
+
+/* TV 홈: 18시 이후 밤 — 남색 막이 6초 동안 덮이고 별·창문 불빛이 켜짐 */
+.nightfx{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;mix-blend-mode:multiply;transition:opacity 6s ease-in-out;
+  background:linear-gradient(180deg,#19204a 0%,#26326a 40%,#55619c 70%,#9aa3cf 88%,#c9cde6 100%)}
+.stage.tod-night .nightfx{opacity:1}
+.hstars{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity 6s ease-in-out}
+.hstars i{position:absolute;display:block;aspect-ratio:1;border-radius:50%;background:#fff;opacity:.25}
+@media (prefers-reduced-motion:no-preference){.hstars i{animation:starTw var(--d) ease-in-out var(--dl) infinite alternate}}
+.stage.tod-night .hstars{opacity:1}
+.scenew{position:absolute;inset:0;z-index:2;pointer-events:none;transform-origin:50% 100%}
+@media (prefers-reduced-motion:no-preference){.scenew{animation:sceneIn 1.6s cubic-bezier(.2,.8,.2,1) both, kenburns 26s ease-in-out 1.6s infinite alternate}}
+.scenew .win{transition:box-shadow 6s}
+.stage.tod-night .scenew .win{animation-duration:calc(var(--d) * .55);box-shadow:0 0 9px 3px rgba(255,220,170,.95)}
+@property --tink{syntax:'<color>';inherits:true;initial-value:#1b2246}
+.title{--tink:#1b2246;transition:--tink 6s ease-in-out}
+.stage.tod-night .title{--tink:#eef1fb;filter:drop-shadow(0 0 14px rgba(25,32,74,.8))}
+.mist{transition:opacity 6s ease-in-out}
+.stage.tod-night .mist{opacity:.3}
+.stage.tod-night .mist.m2{opacity:.2}
+.stage.tod-night .sunglow{opacity:0;transition:opacity 6s}
+.stage.tod-night .cl{opacity:.18;transition:opacity 6s}
+body.tnight .brand{transition:color 6s}
