@@ -102,24 +102,52 @@
       ? `<div class="ph has"><img src="${f.url}" alt="첨부한 사진 ${i + 1}"><button type="button" class="x" data-rm="${i}" aria-label="사진 ${i + 1} 빼기">×</button></div>`
       : `<label class="ph">${PHOTO_ICON}<span>사진 ${i + 1}</span><input type="file" accept="image/*" data-ph="${i}" aria-label="사진 ${i + 1} 선택"></label>`;
   }
+  // 홈 화면 말풍선과 같은 방식으로 이름 가리기 (홍길동 → 홍*동)
+  const mask = (n) => { const c = [...(n || "").trim()]; if (!c.length) return "이름"; if (c.length === 1) return c[0]; if (c.length === 2) return c[0] + "*"; return c[0] + "*".repeat(c.length - 2) + c[c.length - 1]; };
+  const QUICK = ["졸업 축하해요 🎓", "전시 정말 멋졌어요 ✨", "그동안 고생 많았어요 👏", "앞날을 응원해요 💐"];
+  const fitNames = (s) => { const em = [...s].reduce((w, c) => w + (/[가-힣]/.test(c) ? 1 : 0.32), 0) + 0.4; return `font-size:min(2.3rem,calc((min(100vw,560px) - 48px) / ${em.toFixed(2)}))`; };
+  const TBG = `<div class="tbg" aria-hidden="true"><i class="tbg-sun"></i></div>`;
   function viewGuest(t) {
-    state.photos = [null, null, null];
-    return `<main class="wrap">
-    ${teamHead(t)}
-    <form class="panel" id="gf" novalidate>
-      <div class="field"><label for="gname">이름<span class="req">*</span></label><input type="text" id="gname" maxlength="20" autocomplete="name"></div>
-      <div class="field"><label for="gphone">전화번호<span class="req">*</span></label><input type="tel" id="gphone" maxlength="13" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678"></div>
-      <div class="field"><label for="gtext">한 마디<span class="req">*</span></label><textarea id="gtext" maxlength="500"></textarea><p class="count"><span id="gcnt">0</span> / 500</p></div>
+    state.photos = [null, null, null]; state.guestTeam = t;
+    const names = (t.members && t.members.length) ? t.members.join(" · ") : t.name;
+    return `${TBG}<main class="wrap tpage">
+    <header class="thead">
+      <p class="teye">URBAN <span>·</span> 2026 GRADUATE EXHIBITION</p>
+      <h2 class="tnames" style="${fitNames(names)}">${esc(names)}</h2>
+      <p class="tlead">졸업을 축하하는 한 마디를 남겨 주세요</p>
+    </header>
+    <form class="panel glass" id="gf" novalidate>
+      <div class="field"><label for="gtext">한 마디<span class="req">*</span></label>
+        <div class="quick" role="group" aria-label="빠른 문구">${QUICK.map((q) => `<button type="button" class="qchip" data-quick="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+        <textarea id="gtext" maxlength="500" placeholder="전시를 보고 느낀 점이나 축하 인사를 자유롭게 적어 주세요"></textarea><p class="count"><span id="gcnt">0</span> / 500</p></div>
+      <div class="frow">
+        <div class="field"><label for="gname">이름<span class="req">*</span></label><input type="text" id="gname" maxlength="20" autocomplete="name"></div>
+        <div class="field"><label for="gphone">전화번호<span class="req">*</span></label><input type="tel" id="gphone" maxlength="13" inputmode="numeric" autocomplete="tel" placeholder="010-1234-5678"></div>
+      </div>
+      <p class="hint">번호는 공개되지 않아요 · 팀의 감사 연락에만 쓰여요</p>
+      <div class="pv" id="pv">
+        <div class="pv-top"><span>전시장 화면에는 이렇게 떠올라요</span><label class="toggle sm" for="gpub"><span class="sr">홈 화면에도 띄우기</span><input type="checkbox" class="switch" id="gpub" checked></label></div>
+        <div class="pv-stage"><div class="pv-b"><span class="who" id="pvwho">이름</span><p id="pvtxt">여기에 남긴 한 마디가 보여요</p></div></div>
+      </div>
       <div class="field">
         <label class="agree"><input type="checkbox" id="gagree"><span>개인정보 수집·이용에 동의합니다.<span class="req">*</span></span></label>
         <details class="terms"><summary>자세히 보기</summary><p>수집 항목: 이름, 전화번호<br>이용 목적: 졸업전시 방명록 운영 및 감사 연락<br>보유 기간: 전시 종료 후 1개월 이내 파기<br>동의하지 않으실 수 있으나, 이 경우 방명록 작성이 어렵습니다.</p></details>
       </div>
       <p class="err" id="gerr" hidden></p>
-      <label class="toggle" for="gpub">홈 화면에도 띄우기<input type="checkbox" class="switch" id="gpub" checked></label>
-      <button class="btn block" id="gsend" type="submit">보내기</button>
-    </form></main>`;
+      <button class="btn block tbtn" id="gsend" type="submit">응원 보내기</button>
+    </form>
+    <p class="tfoot">2026 홍익대학교 도시공학과 졸업전시회</p></main>`;
   }
-  const viewGuestDone = () => `<main class="wrap"><section class="done">${CHECK}<h2>감사합니다.</h2></section></main>`;
+  const viewGuestDone = (g) => {
+    const t = state.guestTeam, names = t && t.members ? t.members.join(" · ") : "";
+    return `${TBG}<main class="wrap tpage"><section class="done tdone">
+      <div class="fly" aria-hidden="true"><div class="pv-b"><span class="who">${esc(mask(g.name))}</span><p>${esc(short(g.text))}</p></div></div>
+      ${CHECK}
+      <h2>응원이 전달됐어요</h2>
+      <p class="tlead">${g.pub ? "잠시 후 전시장 화면에 떠올라요." : "팀에게만 조용히 전달돼요."}<br>팀에게 큰 힘이 될 거예요.</p>
+      <a class="tlink" href="#team-${esc(t ? t.id : "")}" id="again">한 번 더 남기기</a>
+    </section></main>`;
+  };
   const viewSent = () => `<main class="wrap"><section class="done">${CHECK}<h2>전달되었습니다.</h2></section></main>`;
 
   function viewCheck() {
@@ -330,9 +358,24 @@
     const t = e.target;
     if (t.id === "text") $("#cnt").textContent = t.value.length;
     if (t.id === "gtext") $("#gcnt").textContent = t.value.length;
+    if (t.id === "gtext" || t.id === "gname") drawPv();
     if (t.id === "gphone") { const d = t.value.replace(/\D/g, "").slice(0, 11); t.value = d.length < 4 ? d : d.length < 8 ? d.slice(0, 3) + "-" + d.slice(3) : d.slice(0, 3) + "-" + d.slice(3, d.length - 4) + "-" + d.slice(-4); }
   });
 
+  function drawPv() {
+    const n = $("#gname"), x = $("#gtext"); if (!n || !x) return;
+    $("#pvwho").textContent = mask(n.value);
+    $("#pvtxt").textContent = x.value.trim() ? short(x.value.trim()) : "여기에 남긴 한 마디가 보여요";
+    $("#pv").classList.toggle("off", !$("#gpub").checked);
+  }
+  document.addEventListener("change", (e) => { if (e.target.id === "gpub") drawPv(); });
+  document.addEventListener("click", (e) => {
+    const q = e.target.closest("[data-quick]"); if (!q) return;
+    const x = $("#gtext"); const v = x.value.trim();
+    x.value = v ? v + " " + q.dataset.quick : q.dataset.quick;
+    $("#gcnt").textContent = x.value.length; drawPv(); x.focus();
+  });
+  document.addEventListener("click", (e) => { if (e.target.id === "again" && location.hash === e.target.getAttribute("href")) { e.preventDefault(); route(); } });
   const drawPhotos = () => { const b = $("#photos"); if (b) b.innerHTML = [0, 1, 2].map(photoSlot).join(""); };
   document.addEventListener("change", (e) => {
     const i = e.target.dataset && e.target.dataset.ph; if (i === undefined) return;
@@ -374,7 +417,7 @@
         for (const p of state.photos.filter(Boolean)) paths.push(await api.upload(t.id, p.file));
         await api.addGuest({ p_team: t.id, p_name: name, p_phone: phone, p_text: text, p_photos: paths, p_pub: $("#gpub").checked });
         state.photos.forEach((p) => p && URL.revokeObjectURL(p.url)); state.photos = [null, null, null];
-        $("#app").innerHTML = viewGuestDone(); window.scrollTo(0, 0);
+        $("#app").innerHTML = viewGuestDone({ name, text, pub: $("#gpub").checked }); window.scrollTo(0, 0);
       } catch (x) { fail(err, "저장하지 못했어요. 연결을 확인하고 다시 눌러 주세요."); btn.disabled = false; btn.textContent = "다시 남기기"; }
     }
 

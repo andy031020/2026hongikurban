@@ -212,3 +212,51 @@ details.terms p{margin-top:8px;line-height:1.6}
 .bubble .msg{background:rgba(242,243,248,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:20px;padding:12px 18px;box-shadow:var(--shadow);gap:0;font-size:1em;line-height:1.45}
 @media (min-aspect-ratio:4/3) and (min-width:900px){.bubble .msg{padding:14px 22px}}
 .bubble .who{z-index:2}
+
+/* ================= 팀 페이지 (QR 랜딩) — 현판과 같은 흐린 도시 배경 ================= */
+.tbg{position:fixed;inset:0;z-index:-1;background:#f1f1f3;overflow:hidden;pointer-events:none}
+.tbg::before{content:"";position:absolute;inset:-24px;background:url(/assets/scene-hd3.webp) no-repeat 50% 100%/auto 78%;filter:blur(6px) saturate(1.15);opacity:.38}
+.tbg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(241,241,243,.92) 0%,rgba(241,241,243,.55) 34%,rgba(241,241,243,0) 60%,rgba(255,255,255,.55) 100%)}
+.tbg-sun{position:absolute;left:50%;top:18%;width:min(90vw,520px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(239,183,156,.38) 0%,rgba(239,183,156,.12) 42%,rgba(239,183,156,0) 70%)}
+.tpage{max-width:560px;gap:28px}
+.thead{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:8px}
+.teye{font-family:var(--f-serif);font-weight:600;font-size:.78rem;letter-spacing:.28em;color:var(--ink);opacity:.8}
+.teye span{color:var(--peach);margin:0 .2em}
+.tnames{font-family:"Noto Serif KR",var(--f);font-weight:600;letter-spacing:-.01em;white-space:nowrap;line-height:1.25;
+  background:linear-gradient(180deg,#1e284e 0%,#3a4f97 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tlead{font-size:1rem;color:var(--muted);line-height:1.6}
+.panel.glass{background:rgba(255,255,255,.72);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  border:1px solid rgba(255,255,255,.9);box-shadow:0 20px 50px rgba(59,85,173,.14),0 2px 6px rgba(27,34,70,.05)}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+.qchip{font:inherit;font-size:.88rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:7px 13px;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+.qchip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.qchip:active{transform:scale(.96)}
+.frow{display:grid;grid-template-columns:1fr 1.25fr;gap:12px}
+@media (max-width:420px){.frow{grid-template-columns:1fr}}
+.hint{font-size:.82rem;color:var(--muted);margin-top:-12px}
+.pv{border-radius:20px;background:linear-gradient(180deg,#eceef6,#f6f2f0);padding:14px 16px 18px;display:flex;flex-direction:column;gap:12px;transition:opacity .2s}
+.pv-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.88rem;font-weight:600;color:var(--ink)}
+.pv.off .pv-stage{opacity:.35;filter:grayscale(1)}
+.pv.off .pv-top>span::after{content:" · 꺼짐";color:var(--muted);font-weight:500}
+.pv-stage{display:flex;justify-content:center;padding-top:10px;transition:opacity .2s,filter .2s}
+.pv-b{position:relative;max-width:92%}
+.pv-b p{margin:0;background:rgba(242,243,248,.96);border-radius:20px;padding:12px 18px;box-shadow:var(--shadow);font-size:.98rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.pv-b .who{position:absolute;top:-11px;right:12px;padding:2px 9px;border-radius:999px;background:var(--accent);color:#fff;font-size:.7rem;font-weight:600;letter-spacing:.06em;line-height:1.5;box-shadow:0 2px 8px rgba(59,85,173,.25);z-index:2}
+.toggle.sm .switch{transform:scale(.85);transform-origin:right center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tbtn{background:linear-gradient(135deg,#25306a 0%,#3b55ad 60%,#5b72c4 100%);box-shadow:0 10px 24px rgba(59,85,173,.3);font-weight:600;letter-spacing:.02em}
+.tfoot{text-align:center;font-size:.8rem;letter-spacing:.14em;color:var(--muted)}
+.tdone{padding-top:40px;gap:16px}
+.tdone h2{font-family:"Noto Serif KR",var(--f);font-weight:600}
+.tdone .check{background:linear-gradient(135deg,#3b55ad,#5b72c4);box-shadow:0 12px 30px rgba(59,85,173,.35)}
+.fly{display:flex;justify-content:center;width:100%;margin-bottom:8px}
+@media (prefers-reduced-motion:no-preference){
+  .fly .pv-b{animation:flyup 2.6s cubic-bezier(.3,.6,.3,1) .3s both}
+  .tbg-sun{animation:breathe 7s ease-in-out infinite}
+}
+@keyframes flyup{0%{opacity:0;transform:translateY(40px) scale(.9)}25%{opacity:1;transform:translateY(0) scale(1)}70%{opacity:1;transform:translateY(-10px)}100%{opacity:0;transform:translateY(-90px)}}
+@keyframes breathe{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+.teye{font-size:.7rem;letter-spacing:.2em;white-space:nowrap}
+.quick{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:2px 4px;-webkit-mask:linear-gradient(90deg,#000 88%,transparent);mask:linear-gradient(90deg,#000 88%,transparent)}
+.quick::-webkit-scrollbar{display:none}
+.qchip{flex:none;font-size:.84rem;padding:6px 12px}
