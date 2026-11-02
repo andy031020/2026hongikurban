@@ -160,7 +160,7 @@
       <p class="hint">번호는 공개되지 않아요 · 팀의 감사 연락에만 쓰여요</p>
       <div class="pv" id="pv">
         <div class="pv-top"><span>전시장 화면에는 이렇게 떠올라요</span><label class="toggle sm" for="gpub"><span class="sr">홈 화면에도 띄우기</span><input type="checkbox" class="switch" id="gpub" checked></label></div>
-        <div class="pv-stage"><div class="pv-b c-peach" id="pvb"><span class="who" id="pvwho">이름</span><p id="pvtxt">여기에 남긴 한 마디가 보여요</p></div></div>
+        <div class="pv-stage"><div class="pv-b c-peach" id="pvb"><p id="pvtxt">여기에 남긴 한 마디가 보여요</p><span class="who" id="pvwho">이름</span></div></div>
       </div>
       <div class="field">
         <label class="agree"><input type="checkbox" id="gagree"><span>개인정보 수집·이용에 동의합니다.<span class="req">*</span></span></label>
@@ -211,7 +211,7 @@
       const lane = (state.tLane = ((state.tLane || 0) + 1 + Math.floor(Math.random() * 2)) % 3);
       b.style.left = (4 + lane * 31 + Math.random() * 4) + "%"; b.style.maxWidth = "62%";
       b.style.setProperty("--h", h.clientHeight * 0.5 + "px"); b.style.setProperty("--dur", (10 + Math.random() * 4).toFixed(1) + "s");
-      b.innerHTML = `<div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${esc(short(m.text).slice(0, 34))}</p></div>`;
+      b.innerHTML = `<div class="sway"><p class="msg">${esc(short(m.text).slice(0, 34))}</p>${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}</div>`;
       b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
       sky.appendChild(b);
     };
@@ -466,7 +466,7 @@
     b.style.maxWidth = Math.min(340, lw - 16) + "px";
     b.style.setProperty("--h", h + 360 + "px");
     b.style.setProperty("--dur", ((h + 360) / (52 + Math.random() * 14)).toFixed(1) + "s");
-    b.innerHTML = `<div class="sway">${isNew ? `<span class="newtag">방금 도착</span><i class="nst s1"></i><i class="nst s2"></i><i class="nst s3"></i>` : ""}${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${stk(m)}${esc(m.text)}</p></div>`;
+    b.innerHTML = `<div class="sway"><p class="msg">${stk(m)}${esc(m.text)}</p>${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}${isNew ? `<span class="newtag">방금 도착</span><i class="nst s1"></i><i class="nst s2"></i><i class="nst s3"></i>` : ""}</div>`;
     b.firstChild.style.animationDelay = (-Math.random() * 5).toFixed(1) + "s";
     b.addEventListener("animationend", (e) => { if (e.target === b) b.remove(); });
     sky.appendChild(b);
@@ -503,7 +503,7 @@
   function drawStill() {
     const sky = $("#sky"); if (!sky) return;
     sky.className = "still";
-    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble${bcls(m)}"><div class="sway">${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}<p class="msg">${stk(m)}${esc(m.text)}</p></div></div>`).join("");
+    sky.innerHTML = state.floats.slice(0, 10).map((m) => `<div class="bubble${bcls(m)}"><div class="sway"><p class="msg">${stk(m)}${esc(m.text)}</p>${m.who ? `<span class="who">${esc(m.who)}</span>` : ""}</div></div>`).join("");
   }
   function makeMotes() {
     const m = $("#motes"); if (!m || reduced) return;

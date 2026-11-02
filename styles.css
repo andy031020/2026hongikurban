@@ -435,3 +435,6 @@ body.tnight .brand{color:#e9ecf8;text-shadow:none}
 .stage.tod-night .sunglow{opacity:0;transition:opacity 6s}
 .stage.tod-night .cl{opacity:.18;transition:opacity 6s}
 body.tnight .brand{transition:color 6s}
+/* 아이폰 사파리: 블러 효과가 있는 말풍선이 이름표를 덮는 문제 → 이름표를 별도 레이어로 위에 고정 */
+.bubble .msg,.pv-b p{position:relative;z-index:1}
+.bubble .who,.bubble .newtag,.bubble .nst,.pv-b .who{z-index:5;-webkit-transform:translateZ(1px);transform:translateZ(1px)}
